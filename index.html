@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian North - The Crystallization Engine</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Quantum Reality Selection Overlay -->
+    <div id="quantum-overlay" class="active">
+        <div class="quantum-intro">
+            <h1 class="glitch" data-text="OBSIDIAN NORTH">OBSIDIAN NORTH</h1>
+            <p class="subtitle">Every project begins as infinite possibility</p>
+            <p class="instruction">Choose your reality...</p>
+        </div>
+
+        <div class="reality-container">
+            <div class="reality-option" data-reality="technical">
+                <div class="reality-label">THE TECHNICAL DIMENSION</div>
+                <div class="reality-desc">Architecture • Performance • Scale</div>
+            </div>
+
+            <div class="reality-option" data-reality="innovation">
+                <div class="reality-label">THE INNOVATION DIMENSION</div>
+                <div class="reality-desc">Cutting-Edge • Experimental • Future</div>
+            </div>
+
+            <div class="reality-option" data-reality="impact">
+                <div class="reality-label">THE IMPACT DIMENSION</div>
+                <div class="reality-desc">Business Value • Transformation • Results</div>
+            </div>
+
+            <div class="reality-option" data-reality="aesthetic">
+                <div class="reality-label">THE AESTHETIC DIMENSION</div>
+                <div class="reality-desc">Design • Experience • Beauty</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Canvas for Particle System -->
+    <canvas id="obsidian-canvas"></canvas>
+
+    <!-- Info Overlay (appears after reality selection) -->
+    <div id="info-overlay" class="hidden">
+        <div class="info-content">
+            <h2 id="reality-title">Reality Crystallized</h2>
+            <p id="reality-description">Explore the impossible geometry...</p>
+        </div>
+        <div class="controls">
+            <button id="reset-btn">Reset Reality</button>
+        </div>
+    </div>
+
+    <!-- Stats Display -->
+    <div id="stats">
+        <div class="stat-item">Particles: <span id="particle-count">0</span></div>
+        <div class="stat-item">FPS: <span id="fps">0</span></div>
+    </div>
+
+    <!-- Load Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Load our scripts -->
+    <script src="js/shaders.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/quantum.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
