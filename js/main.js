@@ -181,8 +181,11 @@ class CommandCenter {
         // Update title
         document.querySelector('.panel-title').textContent = project.title;
 
-        // Update mission brief
-        document.querySelector('.section-text').textContent = project.mission;
+        // Update all text sections
+        document.getElementById('mission-text').textContent = project.mission;
+        document.getElementById('challenge-text').textContent = project.challenge;
+        document.getElementById('solution-text').textContent = project.solution;
+        document.getElementById('impact-text').textContent = project.impact;
 
         // Update tech stack
         const techTagsContainer = document.querySelector('.tech-tags');
@@ -206,6 +209,24 @@ class CommandCenter {
             `;
             metricsContainer.appendChild(metric);
         });
+
+        // Update links
+        const githubLink = document.getElementById('github-link');
+        const liveLink = document.getElementById('live-link');
+
+        if (project.githubUrl) {
+            githubLink.href = project.githubUrl;
+            githubLink.style.display = 'flex';
+        } else {
+            githubLink.style.display = 'none';
+        }
+
+        if (project.liveUrl) {
+            liveLink.href = project.liveUrl;
+            liveLink.style.display = 'flex';
+        } else {
+            liveLink.style.display = 'none';
+        }
     }
 
     formatMetricLabel(key) {

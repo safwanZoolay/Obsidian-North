@@ -238,6 +238,11 @@ body {
     font-size: 1rem;
 }
 
+.impact-text {
+    color: var(--neon-green);
+    font-weight: bold;
+}
+
 .tech-tags {
     display: flex;
     flex-wrap: wrap;
@@ -316,6 +321,38 @@ body {
 
 .demo-output.hidden {
     display: none;
+}
+
+.project-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.project-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(0, 240, 255, 0.05);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    color: var(--neon-blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.1rem;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+.project-link:hover {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.link-icon {
+    font-size: 1.1rem;
 }
 
 /* HUD */
