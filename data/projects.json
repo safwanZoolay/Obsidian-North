@@ -1,0 +1,85 @@
+[
+  {
+    "id": "project-alpha",
+    "title": "PROJECT ALPHA",
+    "category": "fullstack",
+    "mission": "Build a next-generation e-commerce platform capable of handling 1M+ concurrent users with sub-100ms response times.",
+    "challenge": "Existing platform couldn't scale beyond 10K users without performance degradation. Needed complete architectural overhaul.",
+    "solution": "Implemented microservices architecture with Redis caching layer, database sharding, and CDN integration.",
+    "impact": "Platform now handles 1.2M concurrent users with 87ms average response time. Revenue increased 340% YoY.",
+    "techStack": ["React", "Node.js", "PostgreSQL", "Redis", "AWS", "Docker", "Kubernetes"],
+    "metrics": {
+      "uptime": "99.97%",
+      "responseTime": "87ms",
+      "activeUsers": 1247,
+      "requestsPerSecond": 15000
+    },
+    "demoType": "api",
+    "demoEndpoint": "https://api.example.com/v1/status",
+    "githubUrl": "https://github.com/obsidiannorth/project-alpha",
+    "liveUrl": "https://project-alpha.example.com",
+    "featured": true,
+    "order": 1
+  },
+  {
+    "id": "project-beta",
+    "title": "PROJECT BETA",
+    "category": "backend",
+    "mission": "Real-time analytics pipeline processing 50M events/day with <500ms latency.",
+    "challenge": "Legacy batch processing system had 24-hour delays. Business needed real-time insights.",
+    "solution": "Built streaming architecture using Kafka, Spark, and ClickHouse for real-time aggregation.",
+    "impact": "Analytics now available in real-time. Data-driven decisions improved conversion by 23%.",
+    "techStack": ["Kafka", "Apache Spark", "ClickHouse", "Python", "Go", "Grafana"],
+    "metrics": {
+      "eventsPerDay": "50M+",
+      "processingLatency": "450ms",
+      "dataRetention": "2 years",
+      "uptime": "99.95%"
+    },
+    "demoType": "visualization",
+    "githubUrl": "https://github.com/obsidiannorth/project-beta",
+    "featured": true,
+    "order": 2
+  },
+  {
+    "id": "project-gamma",
+    "title": "PROJECT GAMMA",
+    "category": "frontend",
+    "mission": "Design system and component library used by 200+ developers across 15 products.",
+    "challenge": "Inconsistent UI/UX across products. High development costs due to duplicate work.",
+    "solution": "Created comprehensive design system with React components, documentation, and theming support.",
+    "impact": "Development time reduced by 60%. UI consistency increased user satisfaction by 35%.",
+    "techStack": ["React", "TypeScript", "Storybook", "Figma", "CSS-in-JS", "Jest"],
+    "metrics": {
+      "components": 120,
+      "developers": 200,
+      "products": 15,
+      "npmDownloads": "50K/month"
+    },
+    "demoType": "interactive",
+    "liveUrl": "https://design.example.com",
+    "githubUrl": "https://github.com/obsidiannorth/project-gamma",
+    "featured": true,
+    "order": 3
+  },
+  {
+    "id": "project-delta",
+    "title": "PROJECT DELTA",
+    "category": "devops",
+    "mission": "CI/CD platform reducing deployment time from hours to minutes with zero-downtime releases.",
+    "challenge": "Manual deployments took 4-6 hours. Frequent rollbacks due to errors. Developer productivity suffered.",
+    "solution": "Automated pipeline with blue-green deployments, automated testing, and rollback mechanisms.",
+    "impact": "Deployment time reduced to 8 minutes. Zero-downtime releases. 95% reduction in deployment issues.",
+    "techStack": ["GitHub Actions", "Terraform", "Docker", "Kubernetes", "AWS", "Prometheus"],
+    "metrics": {
+      "deploymentTime": "8 min",
+      "deploymentsPerDay": 45,
+      "successRate": "99.2%",
+      "downtime": "0 min"
+    },
+    "demoType": "terminal",
+    "githubUrl": "https://github.com/obsidiannorth/project-delta",
+    "featured": true,
+    "order": 4
+  }
+]
