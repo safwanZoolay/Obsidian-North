@@ -10,9 +10,28 @@ class CommandCenter {
         this.mouse = new THREE.Vector2();
         this.raycaster = new THREE.Raycaster();
 
-        this.init();
-        this.setupEventListeners();
-        this.animate();
+        this.projects = [];
+        this.currentProject = null;
+
+        this.loadProjects().then(() => {
+            this.init();
+            this.setupEventListeners();
+            this.animate();
+        });
+    }
+
+    async loadProjects() {
+        try {
+            const response = await fetch('data/projects.json');
+            this.projects = await response.json();
+            // Set first project as current
+            this.currentProject = this.projects[0];
+            console.log('Loaded projects:', this.projects.length);
+        } catch (error) {
+            console.error('Failed to load projects:', error);
+            // Fallback to empty array
+            this.projects = [];
+        }
     }
 
     init() {
@@ -142,14 +161,96 @@ class CommandCenter {
     }
 
     showWorkstationPanel() {
+        if (!this.currentProject) return;
+
         const panel = document.getElementById('workstation-panel');
+
+        // Populate panel with current project data
+        this.populateProjectPanel(this.currentProject);
+
         panel.classList.remove('hidden');
 
         // Animate camera closer
         this.animateCamera({ x: 0, y: 2, z: 4 }, 1000);
 
-        // Start animating user count
-        this.animateUserCount();
+        // Start animating metrics
+        this.animateMetrics();
+    }
+
+    populateProjectPanel(project) {
+        // Update title
+        document.querySelector('.panel-title').textContent = project.title;
+
+        // Update mission brief
+        document.querySelector('.section-text').textContent = project.mission;
+
+        // Update tech stack
+        const techTagsContainer = document.querySelector('.tech-tags');
+        techTagsContainer.innerHTML = '';
+        project.techStack.forEach(tech => {
+            const tag = document.createElement('span');
+            tag.className = 'tech-tag';
+            tag.textContent = tech;
+            techTagsContainer.appendChild(tag);
+        });
+
+        // Update metrics
+        const metricsContainer = document.querySelector('.metrics');
+        metricsContainer.innerHTML = '';
+        Object.entries(project.metrics).forEach(([key, value]) => {
+            const metric = document.createElement('div');
+            metric.className = 'metric';
+            metric.innerHTML = `
+                <span class="metric-label">${this.formatMetricLabel(key)}</span>
+                <span class="metric-value">${value}</span>
+            `;
+            metricsContainer.appendChild(metric);
+        });
+    }
+
+    formatMetricLabel(key) {
+        // Convert camelCase to Title Case
+        return key
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, str => str.toUpperCase())
+            .trim();
+    }
+
+    animateMetrics() {
+        // Animate any numeric metrics
+        const metricValues = document.querySelectorAll('.metric-value');
+        metricValues.forEach(el => {
+            const text = el.textContent;
+            // Check if it contains a number we can animate
+            const match = text.match(/(\d+)/);
+            if (match) {
+                this.animateNumber(el, parseInt(match[1]));
+            }
+        });
+    }
+
+    animateNumber(element, target) {
+        const duration = 1000;
+        const start = 0;
+        const startTime = Date.now();
+        const originalText = element.textContent;
+
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(start + (target - start) * eased);
+
+            // Replace the number in the original text
+            element.textContent = originalText.replace(/\d+/, current);
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        animate();
     }
 
     hideWorkstationPanel() {
@@ -189,22 +290,6 @@ class CommandCenter {
         };
 
         animate();
-    }
-
-    animateUserCount() {
-        const element = document.getElementById('active-users');
-        let count = 1247;
-
-        const interval = setInterval(() => {
-            // Random fluctuation
-            count += Math.floor(Math.random() * 10 - 5);
-            count = Math.max(1200, Math.min(1300, count));
-
-            element.textContent = count.toLocaleString();
-        }, 2000);
-
-        // Store interval to clear later if needed
-        this.userCountInterval = interval;
     }
 
     runDemo() {
