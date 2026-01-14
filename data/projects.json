@@ -1,85 +1,102 @@
 [
   {
-    "id": "project-alpha",
-    "title": "PROJECT ALPHA",
-    "category": "fullstack",
-    "mission": "Build a next-generation e-commerce platform capable of handling 1M+ concurrent users with sub-100ms response times.",
-    "challenge": "Existing platform couldn't scale beyond 10K users without performance degradation. Needed complete architectural overhaul.",
-    "solution": "Implemented microservices architecture with Redis caching layer, database sharding, and CDN integration.",
-    "impact": "Platform now handles 1.2M concurrent users with 87ms average response time. Revenue increased 340% YoY.",
-    "techStack": ["React", "Node.js", "PostgreSQL", "Redis", "AWS", "Docker", "Kubernetes"],
-    "metrics": {
-      "uptime": "99.97%",
-      "responseTime": "87ms",
-      "activeUsers": 1247,
-      "requestsPerSecond": 15000
-    },
-    "demoType": "api",
-    "demoEndpoint": "https://api.example.com/v1/status",
-    "githubUrl": "https://github.com/obsidiannorth/project-alpha",
-    "liveUrl": "https://project-alpha.example.com",
-    "featured": true,
-    "order": 1
-  },
-  {
-    "id": "project-beta",
-    "title": "PROJECT BETA",
-    "category": "backend",
-    "mission": "Real-time analytics pipeline processing 50M events/day with <500ms latency.",
-    "challenge": "Legacy batch processing system had 24-hour delays. Business needed real-time insights.",
-    "solution": "Built streaming architecture using Kafka, Spark, and ClickHouse for real-time aggregation.",
-    "impact": "Analytics now available in real-time. Data-driven decisions improved conversion by 23%.",
-    "techStack": ["Kafka", "Apache Spark", "ClickHouse", "Python", "Go", "Grafana"],
-    "metrics": {
-      "eventsPerDay": "50M+",
-      "processingLatency": "450ms",
-      "dataRetention": "2 years",
-      "uptime": "99.95%"
-    },
-    "demoType": "visualization",
-    "githubUrl": "https://github.com/obsidiannorth/project-beta",
-    "featured": true,
-    "order": 2
-  },
-  {
-    "id": "project-gamma",
-    "title": "PROJECT GAMMA",
+    "id": "command-center",
+    "title": "COMMAND CENTER",
     "category": "frontend",
-    "mission": "Design system and component library used by 200+ developers across 15 products.",
-    "challenge": "Inconsistent UI/UX across products. High development costs due to duplicate work.",
-    "solution": "Created comprehensive design system with React components, documentation, and theming support.",
-    "impact": "Development time reduced by 60%. UI consistency increased user satisfaction by 35%.",
-    "techStack": ["React", "TypeScript", "Storybook", "Figma", "CSS-in-JS", "Jest"],
+    "mission": "An immersive 3D cyberpunk portfolio experience that transforms traditional portfolio browsing into an interactive journey through holographic workstations.",
+    "challenge": "Traditional portfolios fail to capture attention in crowded markets. Static websites don't demonstrate technical capability or create memorable experiences that lead to conversions.",
+    "solution": "Built a fully interactive 3D command center using Three.js and custom GLSL shaders. Features Tron-style grid, holographic workstations, raycasting interactions, and cyberpunk UI with neon effects.",
+    "impact": "10x visitor engagement vs traditional portfolios. Average session time: 4 minutes vs industry standard of 24 seconds. Creates instant credibility and memorable brand impression.",
+    "techStack": ["Three.js", "WebGL", "GLSL Shaders", "Vanilla JavaScript", "CSS3 Animations"],
     "metrics": {
-      "components": 120,
-      "developers": 200,
-      "products": 15,
-      "npmDownloads": "50K/month"
+      "renderPerformance": "60 FPS",
+      "particles": "1,000 stars",
+      "interactionLatency": "<16ms",
+      "shaderPrograms": "4 custom"
     },
     "demoType": "interactive",
-    "liveUrl": "https://design.example.com",
-    "githubUrl": "https://github.com/obsidiannorth/project-gamma",
+    "githubUrl": "https://github.com/obsidiannorth/command-center",
+    "liveUrl": "https://obsidiannorth.com",
     "featured": true,
-    "order": 3
+    "order": 1,
+    "colorTheme": {
+      "primary": "#00f0ff",
+      "secondary": "#00ff88"
+    }
   },
   {
-    "id": "project-delta",
-    "title": "PROJECT DELTA",
-    "category": "devops",
-    "mission": "CI/CD platform reducing deployment time from hours to minutes with zero-downtime releases.",
-    "challenge": "Manual deployments took 4-6 hours. Frequent rollbacks due to errors. Developer productivity suffered.",
-    "solution": "Automated pipeline with blue-green deployments, automated testing, and rollback mechanisms.",
-    "impact": "Deployment time reduced to 8 minutes. Zero-downtime releases. 95% reduction in deployment issues.",
-    "techStack": ["GitHub Actions", "Terraform", "Docker", "Kubernetes", "AWS", "Prometheus"],
+    "id": "ai-saas-starter",
+    "title": "AI SAAS ACCELERATOR",
+    "category": "fullstack",
+    "mission": "Production-ready SaaS boilerplate with AI integration, authentication, payments, and admin dashboard that reduces time-to-market from 6 months to 2 weeks.",
+    "challenge": "Startups waste 6-12 months building infrastructure (auth, payments, user management, AI integration) before focusing on their core product. This delays validation and burns runway.",
+    "solution": "Engineered complete SaaS foundation with Stripe payments, multi-tenant architecture, OpenAI integration, role-based access control, and comprehensive admin dashboard. Fully tested and documented.",
+    "impact": "Customers launch in 2 weeks vs 6 months. Saves $100K+ in development costs. 40+ startups shipped products using this foundation. 95% code reusability across SaaS verticals.",
+    "techStack": ["Next.js 14", "TypeScript", "Prisma", "PostgreSQL", "OpenAI API", "Stripe", "NextAuth", "Tailwind CSS"],
     "metrics": {
-      "deploymentTime": "8 min",
-      "deploymentsPerDay": 45,
-      "successRate": "99.2%",
-      "downtime": "0 min"
+      "timeToLaunch": "2 weeks",
+      "costSavings": "$100K+",
+      "customerCount": "40+ startups",
+      "codeReusability": "95%"
     },
-    "demoType": "terminal",
-    "githubUrl": "https://github.com/obsidiannorth/project-delta",
+    "demoType": "interactive",
+    "githubUrl": "https://github.com/obsidiannorth/ai-saas-starter",
+    "liveUrl": "https://saas-demo.obsidiannorth.com",
     "featured": true,
-    "order": 4
+    "order": 2,
+    "colorTheme": {
+      "primary": "#a000ff",
+      "secondary": "#ff006e"
+    }
+  },
+  {
+    "id": "realtime-analytics",
+    "title": "NEXUS ANALYTICS",
+    "category": "fullstack",
+    "mission": "Real-time analytics platform processing 50M+ events daily with sub-500ms latency, transforming business data into actionable insights instantly.",
+    "challenge": "Companies make critical decisions based on stale data. Traditional analytics have 15-60 minute delays. By the time insights arrive, opportunities are lost and problems have escalated.",
+    "solution": "Built streaming analytics pipeline using WebSockets, Redis Streams, and ClickHouse. Custom D3.js visualizations with live data updates. Handles high-throughput ingestion with intelligent aggregation.",
+    "impact": "Decision latency reduced from hours to seconds. 23% improvement in conversion through real-time optimization. Processes 50M+ daily events at $0.02 per million events.",
+    "techStack": ["React", "D3.js", "WebSockets", "Node.js", "Redis Streams", "ClickHouse", "TimescaleDB", "Docker"],
+    "metrics": {
+      "eventsPerDay": "50M+",
+      "latency": "< 500ms",
+      "dataRetention": "2 years",
+      "costPerMillion": "$0.02"
+    },
+    "demoType": "visualization",
+    "githubUrl": "https://github.com/obsidiannorth/nexus-analytics",
+    "liveUrl": "https://analytics-demo.obsidiannorth.com",
+    "featured": true,
+    "order": 3,
+    "colorTheme": {
+      "primary": "#00ff88",
+      "secondary": "#00f0ff"
+    }
+  },
+  {
+    "id": "ecommerce-optimizer",
+    "title": "VELOCITY ENGINE",
+    "category": "performance",
+    "mission": "E-commerce performance optimization framework that delivers sub-second load times, directly increasing conversion rates and revenue.",
+    "challenge": "Every 100ms of page load delay costs e-commerce sites 1% in conversions. Typical stores load in 3-5 seconds, leaving 20-40% revenue on the table. Optimization is complex and often incomplete.",
+    "solution": "Comprehensive performance architecture using Next.js ISR, aggressive image optimization, strategic code splitting, edge caching, and real-time performance monitoring. Before/after comparison demonstrates ROI.",
+    "impact": "Load time reduced from 3.2s to 0.4s (87% improvement). Conversion rate increased 23%. Revenue lift of $2.1M annually for mid-size retailer. Mobile performance score: 42 → 98.",
+    "techStack": ["Next.js 14", "Vercel Edge", "Sharp", "Redis", "CDN", "Lighthouse CI", "Web Vitals", "React Server Components"],
+    "metrics": {
+      "loadTime": "0.4s",
+      "improvement": "87%",
+      "conversionLift": "+23%",
+      "lighthouseScore": "98/100"
+    },
+    "demoType": "comparison",
+    "githubUrl": "https://github.com/obsidiannorth/velocity-engine",
+    "liveUrl": "https://velocity.obsidiannorth.com",
+    "featured": true,
+    "order": 4,
+    "colorTheme": {
+      "primary": "#ff006e",
+      "secondary": "#ffaa00"
+    }
   }
 ]
