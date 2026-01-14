@@ -57,11 +57,11 @@ class ObsidianParticleSystem {
             colors[i3 + 1] = baseColor.g + Math.random() * 0.1;
             colors[i3 + 2] = baseColor.b + Math.random() * 0.2;
 
-            // Size
-            sizes[i] = Math.random() * 3 + 2;
+            // Size - slightly smaller for sharper appearance
+            sizes[i] = Math.random() * 2.5 + 1.5;
 
-            // Alpha
-            alphas[i] = Math.random() * 0.5 + 0.3;
+            // Alpha - increased for more solid, visible particles
+            alphas[i] = Math.random() * 0.4 + 0.5;
 
             // Crystallization state (0 = liquid, 1 = crystallized)
             crystallizations[i] = 0;
@@ -86,7 +86,7 @@ class ObsidianParticleSystem {
             vertexShader: CrystallizationShaders.vertexShader,
             fragmentShader: CrystallizationShaders.fragmentShader,
             transparent: true,
-            blending: THREE.AdditiveBlending,
+            blending: THREE.NormalBlending,  // Changed from Additive for sharper, less bloomy particles
             depthWrite: false
         });
 

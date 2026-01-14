@@ -29,7 +29,7 @@ const ObsidianShaders = {
         varying float vAlpha;
 
         void main() {
-            // Create circular particles with soft edges
+            // Create circular particles with sharper edges
             vec2 center = gl_PointCoord - vec2(0.5);
             float dist = length(center);
 
@@ -37,14 +37,14 @@ const ObsidianShaders = {
                 discard;
             }
 
-            // Soft edge falloff
-            float alpha = vAlpha * (1.0 - smoothstep(0.3, 0.5, dist));
+            // Sharper edge falloff - tightened range for crisper particles
+            float alpha = vAlpha * (1.0 - smoothstep(0.42, 0.5, dist));
 
-            // Add some glow/shimmer effect
+            // Subtle core glow only - much less blur
             float glow = 1.0 - dist * 2.0;
-            glow = pow(glow, 3.0);
+            glow = pow(glow, 5.0);  // Higher power = tighter glow
 
-            vec3 finalColor = vColor + vec3(glow * 0.3);
+            vec3 finalColor = vColor + vec3(glow * 0.1);  // Reduced glow intensity
 
             gl_FragColor = vec4(finalColor, alpha);
         }
@@ -91,18 +91,18 @@ const CrystallizationShaders = {
                 discard;
             }
 
-            // As crystallization increases, particles become more defined
-            float edgeSharpness = mix(0.3, 0.45, vCrystallization);
+            // As crystallization increases, particles become sharper and more defined
+            float edgeSharpness = mix(0.42, 0.47, vCrystallization);  // Sharper edges
             float alpha = vAlpha * (1.0 - smoothstep(edgeSharpness, 0.5, dist));
 
-            // Add crystalline facets
+            // Add crystalline facets - sharper and more pronounced
             float angle = atan(center.y, center.x);
-            float facets = abs(sin(angle * 6.0)) * vCrystallization;
+            float facets = abs(sin(angle * 8.0)) * vCrystallization;  // More facets
 
-            vec3 crystalColor = vColor + vec3(facets * 0.5);
+            vec3 crystalColor = vColor + vec3(facets * 0.3);  // Reduced facet glow
 
-            // Increased brightness for crystallized particles
-            crystalColor += vec3(vCrystallization * 0.3);
+            // Increased brightness for crystallized particles but less bloomy
+            crystalColor += vec3(vCrystallization * 0.2);
 
             gl_FragColor = vec4(crystalColor, alpha);
         }
