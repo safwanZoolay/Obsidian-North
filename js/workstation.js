@@ -1,11 +1,13 @@
 // Holographic Workstation
 
 class Workstation {
-    constructor(scene, camera, onActivate) {
+    constructor(scene, camera, onActivate, colorPrimary = '#00f0ff', colorSecondary = '#00ff88') {
         this.scene = scene;
         this.camera = camera;
         this.onActivate = onActivate;
         this.isActive = false;
+        this.colorPrimary = new THREE.Color(colorPrimary);
+        this.colorSecondary = new THREE.Color(colorSecondary);
         this.init();
     }
 
@@ -38,7 +40,7 @@ class Workstation {
         this.hologramMaterial = new THREE.ShaderMaterial({
             uniforms: {
                 time: { value: 0 },
-                color: { value: new THREE.Color(0x00f0ff) },
+                color: { value: this.colorPrimary.clone() },
                 opacity: { value: 0.6 },
                 scanlineIntensity: { value: 0.3 }
             },
@@ -54,7 +56,7 @@ class Workstation {
         // Add edge glow
         const edgesGeometry = new THREE.EdgesGeometry(geometry);
         const edgesMaterial = new THREE.LineBasicMaterial({
-            color: 0x00f0ff,
+            color: this.colorPrimary.clone(),
             linewidth: 2,
             transparent: true,
             opacity: 0.8
@@ -66,7 +68,7 @@ class Workstation {
         const glowGeometry = new THREE.BoxGeometry(1.7, 1.7, 1.7);
         const glowMaterial = new THREE.ShaderMaterial({
             uniforms: {
-                glowColor: { value: new THREE.Color(0x00f0ff) },
+                glowColor: { value: this.colorPrimary.clone() },
                 glowIntensity: { value: 0.5 }
             },
             vertexShader: GlowShaders.vertexShader,
@@ -87,7 +89,7 @@ class Workstation {
             const radius = 2 + i * 0.3;
             const geometry = new THREE.RingGeometry(radius, radius + 0.02, 64);
             const material = new THREE.MeshBasicMaterial({
-                color: 0x00ff88,
+                color: this.colorSecondary.clone(),
                 side: THREE.DoubleSide,
                 transparent: true,
                 opacity: 0.3
@@ -108,7 +110,7 @@ class Workstation {
         for (let i = 0; i < pointCount; i++) {
             const geometry = new THREE.SphereGeometry(0.05, 8, 8);
             const material = new THREE.MeshBasicMaterial({
-                color: Math.random() > 0.5 ? 0x00f0ff : 0x00ff88,
+                color: Math.random() > 0.5 ? this.colorPrimary.clone() : this.colorSecondary.clone(),
                 transparent: true,
                 opacity: 0.8
             });

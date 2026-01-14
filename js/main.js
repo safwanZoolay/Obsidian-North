@@ -62,19 +62,27 @@ class CommandCenter {
         // Create grid system
         this.gridSystem = new GridSystem(this.scene);
 
-        // Create workstation
-        this.workstation = new Workstation(this.scene, this.camera, () => {
-            this.showWorkstationPanel();
-        });
+        // Create workstation manager with all projects
+        this.workstationManager = new WorkstationManager(
+            this.scene,
+            this.camera,
+            this.projects,
+            (project, workstation) => {
+                this.showWorkstationPanel(project);
+            }
+        );
 
         // Add ambient lighting
         const ambientLight = new THREE.AmbientLight(0x222244, 0.5);
         this.scene.add(ambientLight);
 
-        // Add point light at workstation
-        const pointLight = new THREE.PointLight(0x00f0ff, 1, 10);
-        pointLight.position.set(0, 2, 0);
-        this.scene.add(pointLight);
+        // Add point lights for each workstation
+        this.workstationManager.getAllWorkstations().forEach(ws => {
+            const pointLight = new THREE.PointLight(ws.colorPrimary, 0.8, 12);
+            pointLight.position.copy(ws.group.position);
+            pointLight.position.y += 1;
+            this.scene.add(pointLight);
+        });
 
         // FPS tracking
         this.frameCount = 0;
@@ -92,14 +100,13 @@ class CommandCenter {
 
             // Check for workstation hover
             this.raycaster.setFromCamera(this.mouse, this.camera);
-            const intersection = this.workstation.checkIntersection(this.raycaster);
+            const hoveredWorkstation = this.workstationManager.checkIntersections(this.raycaster);
 
-            if (intersection) {
-                this.workstation.setHighlight(true);
-                document.getElementById('interaction-hint').textContent = 'Click to access workstation';
+            if (hoveredWorkstation) {
+                const projectTitle = hoveredWorkstation.projectData.title;
+                document.getElementById('interaction-hint').textContent = `Click to access ${projectTitle}`;
                 this.canvas.style.cursor = 'pointer';
             } else {
-                this.workstation.setHighlight(false);
                 document.getElementById('interaction-hint').textContent = 'Explore the command center';
                 this.canvas.style.cursor = 'crosshair';
             }
@@ -108,10 +115,11 @@ class CommandCenter {
         // Click to activate workstation
         window.addEventListener('click', (e) => {
             this.raycaster.setFromCamera(this.mouse, this.camera);
-            const intersection = this.workstation.checkIntersection(this.raycaster);
+            const clickedWorkstation = this.workstationManager.checkIntersections(this.raycaster);
 
-            if (intersection) {
-                this.workstation.activate();
+            if (clickedWorkstation) {
+                // WorkstationManager will call showWorkstationPanel via callback
+                clickedWorkstation.onActivate(clickedWorkstation);
             }
         });
 
@@ -160,18 +168,30 @@ class CommandCenter {
         document.getElementById('hud').style.opacity = '1';
     }
 
-    showWorkstationPanel() {
-        if (!this.currentProject) return;
+    showWorkstationPanel(project) {
+        if (!project) return;
 
         const panel = document.getElementById('workstation-panel');
 
-        // Populate panel with current project data
-        this.populateProjectPanel(this.currentProject);
+        // Populate panel with project data
+        this.populateProjectPanel(project);
 
         panel.classList.remove('hidden');
 
-        // Animate camera closer
-        this.animateCamera({ x: 0, y: 2, z: 4 }, 1000);
+        // Get active workstation position for camera
+        const activeWS = this.workstationManager.getActiveWorkstation();
+        if (activeWS) {
+            const pos = activeWS.group.position;
+            // Camera looks at workstation from a closer distance
+            const offsetDistance = 4;
+            const direction = pos.clone().normalize();
+            const cameraPos = {
+                x: pos.x - direction.x * offsetDistance,
+                y: pos.y + 1,
+                z: pos.z - direction.z * offsetDistance
+            };
+            this.animateCamera(cameraPos, 1000, pos);
+        }
 
         // Start animating metrics
         this.animateMetrics();
@@ -278,19 +298,20 @@ class CommandCenter {
         const panel = document.getElementById('workstation-panel');
         panel.classList.add('hidden');
 
-        // Reset camera
-        this.animateCamera({ x: 0, y: 3, z: 8 }, 1000);
+        // Reset camera to overview position
+        this.animateCamera({ x: 0, y: 3, z: 8 }, 1000, new THREE.Vector3(0, 1, 0));
 
-        this.workstation.deactivate();
+        this.workstationManager.deactivateAll();
     }
 
-    animateCamera(targetPos, duration) {
+    animateCamera(targetPos, duration, lookAtTarget = null) {
         const startPos = {
             x: this.camera.position.x,
             y: this.camera.position.y,
             z: this.camera.position.z
         };
         const startTime = Date.now();
+        const finalLookAt = lookAtTarget || new THREE.Vector3(0, 1, 0);
 
         const animate = () => {
             const elapsed = Date.now() - startTime;
@@ -303,7 +324,7 @@ class CommandCenter {
             this.camera.position.y = startPos.y + (targetPos.y - startPos.y) * eased;
             this.camera.position.z = startPos.z + (targetPos.z - startPos.z) * eased;
 
-            this.camera.lookAt(0, 1, 0);
+            this.camera.lookAt(finalLookAt);
 
             if (progress < 1) {
                 requestAnimationFrame(animate);
@@ -374,11 +395,12 @@ class CommandCenter {
         // Update grid system
         this.gridSystem.update(elapsedTime);
 
-        // Update workstation
-        this.workstation.update(elapsedTime, deltaTime);
+        // Update all workstations
+        this.workstationManager.update(elapsedTime, deltaTime);
 
         // Gentle camera sway when not interacting
-        if (!this.workstation.isActive) {
+        const activeWS = this.workstationManager.getActiveWorkstation();
+        if (!activeWS) {
             this.camera.position.x += Math.sin(elapsedTime * 0.5) * 0.001;
         }
 
