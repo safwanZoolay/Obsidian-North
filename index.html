@@ -3,59 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obsidian North - The Crystallization Engine</title>
+    <title>Obsidian North - Command Center</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Quantum Reality Selection Overlay -->
-    <div id="quantum-overlay" class="active">
-        <div class="quantum-intro">
-            <h1 class="glitch" data-text="OBSIDIAN NORTH">OBSIDIAN NORTH</h1>
-            <p class="subtitle">Every project begins as infinite possibility</p>
-            <p class="instruction">Choose your reality...</p>
+    <!-- Main Canvas for 3D Scene -->
+    <canvas id="command-canvas"></canvas>
+
+    <!-- Welcome Overlay -->
+    <div id="welcome-overlay" class="active">
+        <div class="welcome-content">
+            <h1 class="cyber-title" data-text="OBSIDIAN NORTH">OBSIDIAN NORTH</h1>
+            <p class="tagline">COMMAND CENTER</p>
+            <p class="instruction">INITIALIZING SYSTEMS...</p>
+            <button id="enter-btn" class="cyber-button">ACCESS WORKSTATION</button>
+        </div>
+    </div>
+
+    <!-- Workstation Detail Panel -->
+    <div id="workstation-panel" class="hidden">
+        <div class="panel-header">
+            <h2 class="panel-title">PROJECT ALPHA</h2>
+            <button id="close-panel" class="close-btn">×</button>
         </div>
 
-        <div class="reality-container">
-            <div class="reality-option" data-reality="technical">
-                <div class="reality-label">THE TECHNICAL DIMENSION</div>
-                <div class="reality-desc">Architecture • Performance • Scale</div>
+        <div class="panel-content">
+            <div class="project-section">
+                <h3 class="section-title">// MISSION BRIEF</h3>
+                <p class="section-text">
+                    Build a next-generation e-commerce platform capable of handling
+                    1M+ concurrent users with sub-100ms response times.
+                </p>
             </div>
 
-            <div class="reality-option" data-reality="innovation">
-                <div class="reality-label">THE INNOVATION DIMENSION</div>
-                <div class="reality-desc">Cutting-Edge • Experimental • Future</div>
+            <div class="project-section">
+                <h3 class="section-title">// TECH STACK</h3>
+                <div class="tech-tags">
+                    <span class="tech-tag">React</span>
+                    <span class="tech-tag">Node.js</span>
+                    <span class="tech-tag">PostgreSQL</span>
+                    <span class="tech-tag">Redis</span>
+                    <span class="tech-tag">AWS</span>
+                </div>
             </div>
 
-            <div class="reality-option" data-reality="impact">
-                <div class="reality-label">THE IMPACT DIMENSION</div>
-                <div class="reality-desc">Business Value • Transformation • Results</div>
+            <div class="project-section">
+                <h3 class="section-title">// LIVE METRICS</h3>
+                <div class="metrics">
+                    <div class="metric">
+                        <span class="metric-label">Uptime</span>
+                        <span class="metric-value">99.97%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Response Time</span>
+                        <span class="metric-value">87ms</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Active Users</span>
+                        <span class="metric-value" id="active-users">1,247</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="reality-option" data-reality="aesthetic">
-                <div class="reality-label">THE AESTHETIC DIMENSION</div>
-                <div class="reality-desc">Design • Experience • Beauty</div>
+            <div class="project-section">
+                <h3 class="section-title">// INTERACTION</h3>
+                <button id="demo-btn" class="cyber-button demo-button">
+                    <span class="btn-icon">▶</span> RUN DEMO
+                </button>
+                <div id="demo-output" class="demo-output hidden"></div>
             </div>
         </div>
     </div>
 
-    <!-- Main Canvas for Particle System -->
-    <canvas id="obsidian-canvas"></canvas>
-
-    <!-- Info Overlay (appears after reality selection) -->
-    <div id="info-overlay" class="hidden">
-        <div class="info-content">
-            <h2 id="reality-title">Reality Crystallized</h2>
-            <p id="reality-description">Explore the impossible geometry...</p>
+    <!-- HUD Elements -->
+    <div id="hud">
+        <div class="hud-top">
+            <div class="hud-logo">OBSIDIAN_NORTH://</div>
+            <div class="hud-status">
+                <span class="status-indicator"></span>
+                <span class="status-text">SYSTEM ONLINE</span>
+            </div>
         </div>
-        <div class="controls">
-            <button id="reset-btn">Reset Reality</button>
+        <div class="hud-bottom">
+            <div class="hud-hint" id="interaction-hint">
+                Click workstation to access
+            </div>
+            <div class="hud-stats">
+                <span>FPS: <span id="fps">60</span></span>
+            </div>
         </div>
-    </div>
-
-    <!-- Stats Display -->
-    <div id="stats">
-        <div class="stat-item">Particles: <span id="particle-count">0</span></div>
-        <div class="stat-item">FPS: <span id="fps">0</span></div>
     </div>
 
     <!-- Load Three.js -->
@@ -63,8 +99,8 @@
 
     <!-- Load our scripts -->
     <script src="js/shaders.js"></script>
-    <script src="js/particles.js"></script>
-    <script src="js/quantum.js"></script>
+    <script src="js/grid.js"></script>
+    <script src="js/workstation.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

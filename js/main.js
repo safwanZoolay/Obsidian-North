@@ -1,15 +1,14 @@
-// Main application controller
+// Main Application Controller for Obsidian North Command Center
 
-class ObsidianNorth {
+class CommandCenter {
     constructor() {
-        this.canvas = document.getElementById('obsidian-canvas');
+        this.canvas = document.getElementById('command-canvas');
         this.width = window.innerWidth;
         this.height = window.innerHeight;
 
         this.clock = new THREE.Clock();
-        this.frameCount = 0;
-        this.fps = 0;
-        this.lastFpsUpdate = 0;
+        this.mouse = new THREE.Vector2();
+        this.raycaster = new THREE.Raycaster();
 
         this.init();
         this.setupEventListeners();
@@ -19,7 +18,7 @@ class ObsidianNorth {
     init() {
         // Create scene
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x0a0a1a, 0.02);  // Dark blue fog instead of pure black
+        this.scene.fog = new THREE.FogExp2(0x050510, 0.015);
 
         // Create camera
         this.camera = new THREE.PerspectiveCamera(
@@ -28,7 +27,8 @@ class ObsidianNorth {
             0.1,
             1000
         );
-        this.camera.position.z = 10;
+        this.camera.position.set(0, 3, 8);
+        this.camera.lookAt(0, 1, 0);
 
         // Create renderer
         this.renderer = new THREE.WebGLRenderer({
@@ -38,66 +38,61 @@ class ObsidianNorth {
         });
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.setClearColor(0x0a0a1a, 1);  // Dark blue background to match fog
+        this.renderer.setClearColor(0x050510, 1);
 
-        // Create particle system
-        this.particleSystem = new ObsidianParticleSystem(this.scene, 5000);
+        // Create grid system
+        this.gridSystem = new GridSystem(this.scene);
 
-        // Create quantum reality system
-        this.quantumSystem = new QuantumRealitySystem(
-            this.particleSystem,
-            this.onRealitySelected.bind(this)
-        );
+        // Create workstation
+        this.workstation = new Workstation(this.scene, this.camera, () => {
+            this.showWorkstationPanel();
+        });
 
-        // Add ambient lighting (brighter for better visibility)
-        const ambientLight = new THREE.AmbientLight(0x444466);  // Brighter blue-tinted ambient light
+        // Add ambient lighting
+        const ambientLight = new THREE.AmbientLight(0x222244, 0.5);
         this.scene.add(ambientLight);
 
-        // Initial mouse position
-        this.mouse = {
-            x: 0,
-            y: 0,
-            normalizedX: 0,
-            normalizedY: 0
-        };
+        // Add point light at workstation
+        const pointLight = new THREE.PointLight(0x00f0ff, 1, 10);
+        pointLight.position.set(0, 2, 0);
+        this.scene.add(pointLight);
 
-        console.log('Obsidian North initialized');
-        this.updateStats();
+        // FPS tracking
+        this.frameCount = 0;
+        this.fps = 60;
+        this.lastFpsUpdate = 0;
+
+        console.log('Command Center initialized');
     }
 
     setupEventListeners() {
         // Mouse movement
         window.addEventListener('mousemove', (e) => {
-            this.mouse.x = e.clientX;
-            this.mouse.y = e.clientY;
+            this.mouse.x = (e.clientX / this.width) * 2 - 1;
+            this.mouse.y = -(e.clientY / this.height) * 2 + 1;
 
-            // Normalize to -1 to 1 range
-            this.mouse.normalizedX = (e.clientX / this.width) * 2 - 1;
-            this.mouse.normalizedY = -(e.clientY / this.height) * 2 + 1;
+            // Check for workstation hover
+            this.raycaster.setFromCamera(this.mouse, this.camera);
+            const intersection = this.workstation.checkIntersection(this.raycaster);
 
-            // Update particle system
-            this.particleSystem.updateMousePosition(
-                this.mouse.normalizedX,
-                this.mouse.normalizedY,
-                this.camera
-            );
+            if (intersection) {
+                this.workstation.setHighlight(true);
+                document.getElementById('interaction-hint').textContent = 'Click to access workstation';
+                this.canvas.style.cursor = 'pointer';
+            } else {
+                this.workstation.setHighlight(false);
+                document.getElementById('interaction-hint').textContent = 'Explore the command center';
+                this.canvas.style.cursor = 'crosshair';
+            }
         });
 
-        // Touch support for mobile
-        window.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) {
-                const touch = e.touches[0];
-                this.mouse.x = touch.clientX;
-                this.mouse.y = touch.clientY;
+        // Click to activate workstation
+        window.addEventListener('click', (e) => {
+            this.raycaster.setFromCamera(this.mouse, this.camera);
+            const intersection = this.workstation.checkIntersection(this.raycaster);
 
-                this.mouse.normalizedX = (touch.clientX / this.width) * 2 - 1;
-                this.mouse.normalizedY = -(touch.clientY / this.height) * 2 + 1;
-
-                this.particleSystem.updateMousePosition(
-                    this.mouse.normalizedX,
-                    this.mouse.normalizedY,
-                    this.camera
-                );
+            if (intersection) {
+                this.workstation.activate();
             }
         });
 
@@ -112,32 +107,67 @@ class ObsidianNorth {
             this.renderer.setSize(this.width, this.height);
         });
 
-        // Reset button
-        const resetBtn = document.getElementById('reset-btn');
-        resetBtn.addEventListener('click', () => {
-            this.quantumSystem.reset();
+        // Enter button
+        const enterBtn = document.getElementById('enter-btn');
+        enterBtn.addEventListener('click', () => {
+            this.hideWelcomeOverlay();
+        });
+
+        // Close panel button
+        const closeBtn = document.getElementById('close-panel');
+        closeBtn.addEventListener('click', () => {
+            this.hideWorkstationPanel();
+        });
+
+        // Demo button
+        const demoBtn = document.getElementById('demo-btn');
+        demoBtn.addEventListener('click', () => {
+            this.runDemo();
         });
 
         // Keyboard shortcuts
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'r' || e.key === 'R') {
-                this.quantumSystem.reset();
+            if (e.key === 'Escape') {
+                this.hideWorkstationPanel();
             }
         });
     }
 
-    onRealitySelected(reality, data) {
-        console.log('Reality selected:', reality);
+    hideWelcomeOverlay() {
+        const overlay = document.getElementById('welcome-overlay');
+        overlay.classList.add('hidden');
 
-        // Add gentle camera animation
-        this.animateCamera();
+        // Show HUD
+        document.getElementById('hud').style.opacity = '1';
     }
 
-    animateCamera() {
-        // Gentle rotation animation when reality is selected
-        const startZ = this.camera.position.z;
-        const targetZ = 8;
-        const duration = 2000;
+    showWorkstationPanel() {
+        const panel = document.getElementById('workstation-panel');
+        panel.classList.remove('hidden');
+
+        // Animate camera closer
+        this.animateCamera({ x: 0, y: 2, z: 4 }, 1000);
+
+        // Start animating user count
+        this.animateUserCount();
+    }
+
+    hideWorkstationPanel() {
+        const panel = document.getElementById('workstation-panel');
+        panel.classList.add('hidden');
+
+        // Reset camera
+        this.animateCamera({ x: 0, y: 3, z: 8 }, 1000);
+
+        this.workstation.deactivate();
+    }
+
+    animateCamera(targetPos, duration) {
+        const startPos = {
+            x: this.camera.position.x,
+            y: this.camera.position.y,
+            z: this.camera.position.z
+        };
         const startTime = Date.now();
 
         const animate = () => {
@@ -147,7 +177,11 @@ class ObsidianNorth {
             // Ease out cubic
             const eased = 1 - Math.pow(1 - progress, 3);
 
-            this.camera.position.z = startZ + (targetZ - startZ) * eased;
+            this.camera.position.x = startPos.x + (targetPos.x - startPos.x) * eased;
+            this.camera.position.y = startPos.y + (targetPos.y - startPos.y) * eased;
+            this.camera.position.z = startPos.z + (targetPos.z - startPos.z) * eased;
+
+            this.camera.lookAt(0, 1, 0);
 
             if (progress < 1) {
                 requestAnimationFrame(animate);
@@ -157,9 +191,59 @@ class ObsidianNorth {
         animate();
     }
 
-    updateStats() {
-        const particleCount = document.getElementById('particle-count');
-        particleCount.textContent = this.particleSystem.getParticleCount();
+    animateUserCount() {
+        const element = document.getElementById('active-users');
+        let count = 1247;
+
+        const interval = setInterval(() => {
+            // Random fluctuation
+            count += Math.floor(Math.random() * 10 - 5);
+            count = Math.max(1200, Math.min(1300, count));
+
+            element.textContent = count.toLocaleString();
+        }, 2000);
+
+        // Store interval to clear later if needed
+        this.userCountInterval = interval;
+    }
+
+    runDemo() {
+        const output = document.getElementById('demo-output');
+        const btn = document.getElementById('demo-btn');
+
+        btn.disabled = true;
+        btn.textContent = 'RUNNING...';
+
+        output.classList.remove('hidden');
+        output.innerHTML = '';
+
+        // Simulate API call
+        const messages = [
+            '> Initializing connection...',
+            '> Connecting to API endpoint...',
+            '> GET https://api.obsidiannorth.com/v1/status',
+            '> Response: 200 OK',
+            '> {',
+            '>   "status": "operational",',
+            '>   "uptime": 99.97,',
+            '>   "response_time_ms": 87,',
+            '>   "active_sessions": 1247',
+            '> }',
+            '> Connection successful!'
+        ];
+
+        let index = 0;
+        const interval = setInterval(() => {
+            if (index < messages.length) {
+                output.innerHTML += messages[index] + '\n';
+                output.scrollTop = output.scrollHeight;
+                index++;
+            } else {
+                clearInterval(interval);
+                btn.disabled = false;
+                btn.innerHTML = '<span class="btn-icon">▶</span> RUN DEMO';
+            }
+        }, 200);
     }
 
     updateFPS() {
@@ -171,8 +255,7 @@ class ObsidianNorth {
             this.frameCount = 0;
             this.lastFpsUpdate = currentTime;
 
-            const fpsDisplay = document.getElementById('fps');
-            fpsDisplay.textContent = this.fps;
+            document.getElementById('fps').textContent = this.fps;
         }
     }
 
@@ -180,27 +263,29 @@ class ObsidianNorth {
         requestAnimationFrame(this.animate.bind(this));
 
         const deltaTime = this.clock.getDelta();
+        const elapsedTime = this.clock.getElapsedTime();
 
-        // Update particle system
-        this.particleSystem.update(deltaTime);
+        // Update grid system
+        this.gridSystem.update(elapsedTime);
 
-        // Gentle camera rotation based on mouse position
-        const targetRotationY = this.mouse.normalizedX * 0.1;
-        const targetRotationX = this.mouse.normalizedY * 0.1;
+        // Update workstation
+        this.workstation.update(elapsedTime, deltaTime);
 
-        this.camera.rotation.y += (targetRotationY - this.camera.rotation.y) * 0.05;
-        this.camera.rotation.x += (targetRotationX - this.camera.rotation.x) * 0.05;
+        // Gentle camera sway when not interacting
+        if (!this.workstation.isActive) {
+            this.camera.position.x += Math.sin(elapsedTime * 0.5) * 0.001;
+        }
 
-        // Render scene
+        // Render
         this.renderer.render(this.scene, this.camera);
 
-        // Update stats
+        // Update FPS
         this.updateFPS();
     }
 }
 
 // Initialize when DOM is ready
 window.addEventListener('DOMContentLoaded', () => {
-    const app = new ObsidianNorth();
-    window.obsidianNorth = app; // For debugging
+    const app = new CommandCenter();
+    window.commandCenter = app; // For debugging
 });

@@ -1,89 +1,116 @@
-// Custom shaders for the obsidian particle effect
+// Shader library for Obsidian North Command Center
 
-const ObsidianShaders = {
-    // Vertex shader - handles particle positioning and size
+// Tron Grid Shader
+const GridShaders = {
     vertexShader: `
-        attribute float size;
-        attribute vec3 customColor;
-        attribute float alpha;
-
-        varying vec3 vColor;
-        varying float vAlpha;
+        varying vec3 vPosition;
 
         void main() {
-            vColor = customColor;
-            vAlpha = alpha;
-
-            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-
-            // Size attenuation - particles get smaller with distance
-            gl_PointSize = size * (300.0 / -mvPosition.z);
-
-            gl_Position = projectionMatrix * mvPosition;
+            vPosition = position;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
     `,
 
-    // Fragment shader - handles particle appearance and obsidian effect
     fragmentShader: `
-        varying vec3 vColor;
-        varying float vAlpha;
+        uniform float time;
+        uniform vec3 color;
+        uniform float gridSize;
+        uniform float lineWidth;
+
+        varying vec3 vPosition;
 
         void main() {
-            // Create circular particles with sharper edges
-            vec2 center = gl_PointCoord - vec2(0.5);
-            float dist = length(center);
+            // Create grid lines
+            vec2 coord = vPosition.xz / gridSize;
+            vec2 grid = abs(fract(coord - 0.5) - 0.5) / fwidth(coord);
+            float line = min(grid.x, grid.y);
 
-            if (dist > 0.5) {
-                discard;
-            }
+            // Base grid color
+            float gridStrength = 1.0 - min(line, 1.0);
 
-            // Sharper edge falloff - tightened range for crisper particles
-            float alpha = vAlpha * (1.0 - smoothstep(0.42, 0.5, dist));
+            // Add distance fade
+            float dist = length(vPosition.xz);
+            float fade = 1.0 - smoothstep(20.0, 50.0, dist);
 
-            // Subtle core glow only - much less blur
-            float glow = 1.0 - dist * 2.0;
-            glow = pow(glow, 5.0);  // Higher power = tighter glow
+            // Add pulse effect
+            float pulse = sin(time * 0.5 + dist * 0.1) * 0.3 + 0.7;
 
-            vec3 finalColor = vColor + vec3(glow * 0.1);  // Reduced glow intensity
+            // Final color
+            vec3 finalColor = color * gridStrength * fade * pulse;
+            float alpha = gridStrength * fade * 0.6;
 
             gl_FragColor = vec4(finalColor, alpha);
         }
     `
 };
 
-// Crystallization shader for when reality solidifies
-const CrystallizationShaders = {
+// Holographic Workstation Shader
+const HologramShaders = {
     vertexShader: `
-        attribute float size;
-        attribute vec3 customColor;
-        attribute float alpha;
-        attribute float crystallization;
-
-        varying vec3 vColor;
-        varying float vAlpha;
-        varying float vCrystallization;
+        varying vec3 vNormal;
+        varying vec3 vPosition;
 
         void main() {
-            vColor = customColor;
-            vAlpha = alpha;
-            vCrystallization = crystallization;
+            vNormal = normalize(normalMatrix * normal);
+            vPosition = position;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+
+    fragmentShader: `
+        uniform float time;
+        uniform vec3 color;
+        uniform float opacity;
+        uniform float scanlineIntensity;
+
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+
+        void main() {
+            // Fresnel effect for holographic edges
+            vec3 viewDirection = normalize(cameraPosition - vPosition);
+            float fresnel = pow(1.0 - abs(dot(viewDirection, vNormal)), 3.0);
+
+            // Scanlines
+            float scanline = sin(vPosition.y * 30.0 + time * 2.0) * 0.5 + 0.5;
+            scanline = mix(1.0, scanline, scanlineIntensity);
+
+            // Glitch effect
+            float glitch = step(0.98, sin(time * 10.0 + vPosition.y * 50.0));
+
+            // Combine effects
+            vec3 finalColor = color * (fresnel * 2.0 + 0.3);
+            finalColor += vec3(glitch * 0.5);
+
+            float finalAlpha = (fresnel * 0.8 + 0.2) * opacity * scanline;
+
+            gl_FragColor = vec4(finalColor, finalAlpha);
+        }
+    `
+};
+
+// Starfield Particle Shader
+const StarShaders = {
+    vertexShader: `
+        attribute float size;
+        attribute float brightness;
+
+        varying float vBrightness;
+
+        void main() {
+            vBrightness = brightness;
 
             vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-
-            // Particles grow as they crystallize
-            float sizeFactor = 1.0 + crystallization * 0.5;
-            gl_PointSize = size * sizeFactor * (300.0 / -mvPosition.z);
-
+            gl_PointSize = size * (300.0 / -mvPosition.z);
             gl_Position = projectionMatrix * mvPosition;
         }
     `,
 
     fragmentShader: `
-        varying vec3 vColor;
-        varying float vAlpha;
-        varying float vCrystallization;
+        varying float vBrightness;
 
         void main() {
+            // Create circular stars
             vec2 center = gl_PointCoord - vec2(0.5);
             float dist = length(center);
 
@@ -91,20 +118,44 @@ const CrystallizationShaders = {
                 discard;
             }
 
-            // As crystallization increases, particles become sharper and more defined
-            float edgeSharpness = mix(0.42, 0.47, vCrystallization);  // Sharper edges
-            float alpha = vAlpha * (1.0 - smoothstep(edgeSharpness, 0.5, dist));
+            // Soft glow
+            float alpha = (1.0 - dist * 2.0) * vBrightness;
+            alpha = pow(alpha, 2.0);
 
-            // Add crystalline facets - sharper and more pronounced
-            float angle = atan(center.y, center.x);
-            float facets = abs(sin(angle * 8.0)) * vCrystallization;  // More facets
+            vec3 color = vec3(0.6, 0.8, 1.0) * vBrightness;
 
-            vec3 crystalColor = vColor + vec3(facets * 0.3);  // Reduced facet glow
+            gl_FragColor = vec4(color, alpha);
+        }
+    `
+};
 
-            // Increased brightness for crystallized particles but less bloomy
-            crystalColor += vec3(vCrystallization * 0.2);
+// Glow Effect Shader (for workstation highlight)
+const GlowShaders = {
+    vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vPosition;
 
-            gl_FragColor = vec4(crystalColor, alpha);
+        void main() {
+            vNormal = normalize(normalMatrix * normal);
+            vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+
+    fragmentShader: `
+        uniform vec3 glowColor;
+        uniform float glowIntensity;
+
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+
+        void main() {
+            vec3 viewDirection = normalize(-vPosition);
+            float intensity = pow(1.0 - abs(dot(viewDirection, vNormal)), 4.0);
+
+            vec3 glow = glowColor * intensity * glowIntensity;
+
+            gl_FragColor = vec4(glow, intensity * glowIntensity);
         }
     `
 };
