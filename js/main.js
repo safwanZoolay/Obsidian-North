@@ -19,7 +19,7 @@ class ObsidianNorth {
     init() {
         // Create scene
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x000000, 0.02);
+        this.scene.fog = new THREE.FogExp2(0x0a0a1a, 0.02);  // Dark blue fog instead of pure black
 
         // Create camera
         this.camera = new THREE.PerspectiveCamera(
@@ -38,7 +38,7 @@ class ObsidianNorth {
         });
         this.renderer.setSize(this.width, this.height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.setClearColor(0x000000, 1);
+        this.renderer.setClearColor(0x0a0a1a, 1);  // Dark blue background to match fog
 
         // Create particle system
         this.particleSystem = new ObsidianParticleSystem(this.scene, 5000);
@@ -49,8 +49,8 @@ class ObsidianNorth {
             this.onRealitySelected.bind(this)
         );
 
-        // Add ambient lighting (subtle)
-        const ambientLight = new THREE.AmbientLight(0x222222);
+        // Add ambient lighting (brighter for better visibility)
+        const ambientLight = new THREE.AmbientLight(0x444466);  // Brighter blue-tinted ambient light
         this.scene.add(ambientLight);
 
         // Initial mouse position

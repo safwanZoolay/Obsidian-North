@@ -12,7 +12,7 @@ class ObsidianParticleSystem {
 
         // Reality color schemes
         this.realityColors = {
-            default: { r: 0.1, g: 0.1, b: 0.3 },
+            default: { r: 0.4, g: 0.5, b: 0.8 },  // Brighter obsidian blue/purple
             technical: { r: 0.0, g: 1.0, b: 0.5 },
             innovation: { r: 1.0, g: 0.0, b: 1.0 },
             impact: { r: 1.0, g: 0.7, b: 0.0 },
@@ -51,10 +51,10 @@ class ObsidianParticleSystem {
             velocities[i3 + 1] = (Math.random() - 0.5) * 0.02;
             velocities[i3 + 2] = (Math.random() - 0.5) * 0.02;
 
-            // Color - dark blue/purple (obsidian default)
+            // Color - blue/purple with good variation for depth
             const baseColor = this.realityColors.default;
-            colors[i3] = baseColor.r + Math.random() * 0.1;
-            colors[i3 + 1] = baseColor.g + Math.random() * 0.1;
+            colors[i3] = baseColor.r + Math.random() * 0.3;
+            colors[i3 + 1] = baseColor.g + Math.random() * 0.3;
             colors[i3 + 2] = baseColor.b + Math.random() * 0.2;
 
             // Size - slightly smaller for sharper appearance
