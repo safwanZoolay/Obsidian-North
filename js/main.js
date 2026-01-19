@@ -23,6 +23,9 @@ class CommandCenter {
     async loadProjects() {
         try {
             const response = await fetch('data/projects.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             this.projects = await response.json();
             // Set first project as current
             this.currentProject = this.projects[0];
@@ -30,8 +33,29 @@ class CommandCenter {
             console.log('Projects:', this.projects.map(p => p.title));
         } catch (error) {
             console.error('❌ Failed to load projects:', error);
-            // Fallback to empty array
-            this.projects = [];
+            console.warn('⚠️ Using fallback project data');
+            // Fallback to single demo project so scene renders
+            this.projects = [{
+                "id": "command-center",
+                "title": "COMMAND CENTER",
+                "category": "frontend",
+                "mission": "An immersive 3D cyberpunk portfolio experience.",
+                "challenge": "Traditional portfolios fail to capture attention.",
+                "solution": "Built with Three.js and custom GLSL shaders.",
+                "impact": "10x visitor engagement vs traditional portfolios.",
+                "techStack": ["Three.js", "WebGL", "GLSL Shaders"],
+                "metrics": {
+                    "renderPerformance": "60 FPS",
+                    "particles": "1,000 stars"
+                },
+                "githubUrl": "#",
+                "liveUrl": "#",
+                "colorTheme": {
+                    "primary": "#00f0ff",
+                    "secondary": "#00ff88"
+                }
+            }];
+            this.currentProject = this.projects[0];
         }
     }
 
@@ -94,6 +118,12 @@ class CommandCenter {
         console.log('Scene objects:', this.scene.children.length);
         console.log('Camera position:', this.camera.position);
         console.log('Workstations:', this.workstationManager.getAllWorkstations().length);
+
+        // Display debug info on screen
+        const debugInfo = document.getElementById('debug-info');
+        if (debugInfo) {
+            debugInfo.textContent = `Projects: ${this.projects.length} | Workstations: ${this.workstationManager.getAllWorkstations().length} | Scene: ${this.scene.children.length}`;
+        }
     }
 
     setupEventListeners() {
