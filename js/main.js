@@ -26,9 +26,10 @@ class CommandCenter {
             this.projects = await response.json();
             // Set first project as current
             this.currentProject = this.projects[0];
-            console.log('Loaded projects:', this.projects.length);
+            console.log('✅ Loaded projects:', this.projects.length);
+            console.log('Projects:', this.projects.map(p => p.title));
         } catch (error) {
-            console.error('Failed to load projects:', error);
+            console.error('❌ Failed to load projects:', error);
             // Fallback to empty array
             this.projects = [];
         }
@@ -37,7 +38,7 @@ class CommandCenter {
     init() {
         // Create scene
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x050510, 0.015);
+        this.scene.fog = new THREE.FogExp2(0x050510, 0.008);
 
         // Create camera
         this.camera = new THREE.PerspectiveCamera(
@@ -73,7 +74,7 @@ class CommandCenter {
         );
 
         // Add ambient lighting
-        const ambientLight = new THREE.AmbientLight(0x222244, 0.5);
+        const ambientLight = new THREE.AmbientLight(0x222244, 1.0);
         this.scene.add(ambientLight);
 
         // Add point lights for each workstation
@@ -89,7 +90,10 @@ class CommandCenter {
         this.fps = 60;
         this.lastFpsUpdate = 0;
 
-        console.log('Command Center initialized');
+        console.log('✅ Command Center initialized');
+        console.log('Scene objects:', this.scene.children.length);
+        console.log('Camera position:', this.camera.position);
+        console.log('Workstations:', this.workstationManager.getAllWorkstations().length);
     }
 
     setupEventListeners() {

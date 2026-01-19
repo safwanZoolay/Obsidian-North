@@ -13,13 +13,17 @@ class WorkstationManager {
     }
 
     init() {
+        console.log('WorkstationManager init - projects:', this.projects.length);
+
         if (this.projects.length === 0) {
-            console.warn('No projects to create workstations');
+            console.warn('⚠️ No projects to create workstations');
             return;
         }
 
         const radius = 6; // Distance from center
         const angleStep = (Math.PI * 2) / this.projects.length;
+
+        console.log('Creating workstations in circle, radius:', radius);
 
         this.projects.forEach((project, index) => {
             // Calculate position in circle
