@@ -176,15 +176,19 @@ class CommandCenter {
 
         // Close panel button
         const closeBtn = document.getElementById('close-panel');
-        closeBtn.addEventListener('click', () => {
-            this.hideWorkstationPanel();
-        });
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.hideWorkstationPanel();
+            });
+        }
 
-        // Demo button
+        // Demo button (if it exists)
         const demoBtn = document.getElementById('demo-btn');
-        demoBtn.addEventListener('click', () => {
-            this.runDemo();
-        });
+        if (demoBtn) {
+            demoBtn.addEventListener('click', () => {
+                this.runDemo();
+            });
+        }
 
         // Keyboard shortcuts
         window.addEventListener('keydown', (e) => {
