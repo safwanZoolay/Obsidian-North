@@ -182,10 +182,8 @@ class Workstation {
     activate() {
         console.log('Workstation.activate called');
         this.isActive = true;
-        if (this.onActivate) {
-            console.log('Calling workstation onActivate callback');
-            this.onActivate(this);
-        }
+        // Don't call onActivate here - it's already been called by the click handler
+        // This just sets the internal state
     }
 
     deactivate() {
