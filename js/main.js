@@ -87,15 +87,36 @@ class CommandCenter {
         // Create grid system
         this.gridSystem = new GridSystem(this.scene);
 
+        // Create central menu
+        this.centralMenu = new CentralMenu(
+            this.scene,
+            this.camera,
+            this.projects,
+            (project) => {
+                // Find and activate the corresponding workstation
+                const ws = this.workstationManager.getAllWorkstations().find(
+                    w => w.projectData.id === project.id
+                );
+                if (ws) {
+                    ws.onActivate(ws);
+                }
+            }
+        );
+
         // Create workstation manager with all projects
         this.workstationManager = new WorkstationManager(
             this.scene,
             this.camera,
             this.projects,
             (project, workstation) => {
+                // Hide central menu when workstation is activated
+                this.centralMenu.hide();
                 this.showWorkstationPanel(project);
             }
         );
+
+        // Create connection line (hidden by default)
+        this.createConnectionLine();
 
         // Add ambient lighting
         const ambientLight = new THREE.AmbientLight(0x222244, 1.0);
@@ -126,27 +147,80 @@ class CommandCenter {
         }
     }
 
+    createConnectionLine() {
+        // Line from camera to hovered workstation
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(6); // 2 points * 3 coordinates
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.LineBasicMaterial({
+            color: 0x00f0ff,
+            transparent: true,
+            opacity: 0,
+            linewidth: 2
+        });
+
+        this.connectionLine = new THREE.Line(geometry, material);
+        this.scene.add(this.connectionLine);
+    }
+
+    updateConnectionLine(targetPosition) {
+        if (!this.connectionLine || !targetPosition) {
+            if (this.connectionLine) {
+                this.connectionLine.material.opacity = 0;
+            }
+            return;
+        }
+
+        const positions = this.connectionLine.geometry.attributes.position.array;
+
+        // Start from camera
+        positions[0] = this.camera.position.x;
+        positions[1] = this.camera.position.y;
+        positions[2] = this.camera.position.z;
+
+        // End at target
+        positions[3] = targetPosition.x;
+        positions[4] = targetPosition.y;
+        positions[5] = targetPosition.z;
+
+        this.connectionLine.geometry.attributes.position.needsUpdate = true;
+        this.connectionLine.material.opacity = 0.3;
+    }
+
     setupEventListeners() {
         // Mouse movement
         window.addEventListener('mousemove', (e) => {
             this.mouse.x = (e.clientX / this.width) * 2 - 1;
             this.mouse.y = -(e.clientY / this.height) * 2 + 1;
 
-            // Check for workstation hover
             this.raycaster.setFromCamera(this.mouse, this.camera);
+
+            // Check for central menu hover
+            const hoveredMenuItem = this.centralMenu.isVisible ?
+                this.centralMenu.checkIntersection(this.raycaster) : null;
+
+            // Check for workstation hover
             const hoveredWorkstation = this.workstationManager.checkIntersections(this.raycaster);
 
-            if (hoveredWorkstation) {
+            if (hoveredMenuItem) {
+                document.getElementById('interaction-hint').textContent = `Click to view ${hoveredMenuItem.project.title}`;
+                this.canvas.style.cursor = 'pointer';
+                this.updateConnectionLine(null);
+            } else if (hoveredWorkstation) {
                 const projectTitle = hoveredWorkstation.projectData.title;
                 document.getElementById('interaction-hint').textContent = `Click to access ${projectTitle}`;
                 this.canvas.style.cursor = 'pointer';
+                // Draw connection line to hovered workstation
+                this.updateConnectionLine(hoveredWorkstation.group.position);
             } else {
                 document.getElementById('interaction-hint').textContent = 'Explore the command center';
                 this.canvas.style.cursor = 'crosshair';
+                this.updateConnectionLine(null);
             }
         });
 
-        // Click to activate workstation
+        // Click to activate workstation or menu item
         window.addEventListener('click', (e) => {
             // Ignore clicks on overlay and panel
             if (e.target.closest('#welcome-overlay') || e.target.closest('#workstation-panel')) {
@@ -154,6 +228,18 @@ class CommandCenter {
             }
 
             this.raycaster.setFromCamera(this.mouse, this.camera);
+
+            // Check for central menu click first
+            const clickedMenuItem = this.centralMenu.isVisible ?
+                this.centralMenu.checkIntersection(this.raycaster) : null;
+
+            if (clickedMenuItem) {
+                console.log('Menu item clicked:', clickedMenuItem.project.title);
+                this.centralMenu.selectProject(clickedMenuItem);
+                return;
+            }
+
+            // Check for workstation click
             const clickedWorkstation = this.workstationManager.checkIntersections(this.raycaster);
 
             console.log('Click detected - workstation:', clickedWorkstation);
@@ -202,6 +288,9 @@ class CommandCenter {
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 this.hideWorkstationPanel();
+            } else if (e.key === 'm' || e.key === 'M' || e.key === 'Tab') {
+                e.preventDefault();
+                this.centralMenu.toggle();
             }
         });
     }
@@ -355,6 +444,9 @@ class CommandCenter {
         this.animateCamera({ x: 0, y: 3, z: 8 }, 1000, new THREE.Vector3(0, 1, 0));
 
         this.workstationManager.deactivateAll();
+
+        // Show central menu again
+        this.centralMenu.show();
     }
 
     animateCamera(targetPos, duration, lookAtTarget = null) {
@@ -450,6 +542,11 @@ class CommandCenter {
 
         // Update all workstations
         this.workstationManager.update(elapsedTime, deltaTime);
+
+        // Update central menu
+        if (this.centralMenu) {
+            this.centralMenu.update(elapsedTime);
+        }
 
         // Gentle camera sway when not interacting
         const activeWS = this.workstationManager.getActiveWorkstation();

@@ -36,7 +36,7 @@ class WorkstationManager {
             const colorPrimary = project.colorTheme?.primary || '#00f0ff';
             const colorSecondary = project.colorTheme?.secondary || '#00ff88';
 
-            // Create workstation
+            // Create workstation with project data
             const workstation = new Workstation(
                 this.scene,
                 this.camera,
@@ -44,7 +44,8 @@ class WorkstationManager {
                     this.activateWorkstation(ws, project);
                 },
                 colorPrimary,
-                colorSecondary
+                colorSecondary,
+                project  // Pass project data for labels and shape
             );
 
             // Position it
