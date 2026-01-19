@@ -148,10 +148,18 @@ class CommandCenter {
 
         // Click to activate workstation
         window.addEventListener('click', (e) => {
+            // Ignore clicks on overlay and panel
+            if (e.target.closest('#welcome-overlay') || e.target.closest('#workstation-panel')) {
+                return;
+            }
+
             this.raycaster.setFromCamera(this.mouse, this.camera);
             const clickedWorkstation = this.workstationManager.checkIntersections(this.raycaster);
 
+            console.log('Click detected - workstation:', clickedWorkstation);
+
             if (clickedWorkstation) {
+                console.log('Activating workstation:', clickedWorkstation.projectData.title);
                 // WorkstationManager will call showWorkstationPanel via callback
                 clickedWorkstation.onActivate(clickedWorkstation);
             }
@@ -207,14 +215,21 @@ class CommandCenter {
     }
 
     showWorkstationPanel(project) {
-        if (!project) return;
+        console.log('showWorkstationPanel called with project:', project);
+
+        if (!project) {
+            console.error('No project provided to showWorkstationPanel');
+            return;
+        }
 
         const panel = document.getElementById('workstation-panel');
+        console.log('Panel element:', panel);
 
         // Populate panel with project data
         this.populateProjectPanel(project);
 
         panel.classList.remove('hidden');
+        console.log('Panel should now be visible');
 
         // Get active workstation position for camera
         const activeWS = this.workstationManager.getActiveWorkstation();

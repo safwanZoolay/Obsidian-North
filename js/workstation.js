@@ -180,9 +180,11 @@ class Workstation {
     }
 
     activate() {
+        console.log('Workstation.activate called');
         this.isActive = true;
         if (this.onActivate) {
-            this.onActivate();
+            console.log('Calling workstation onActivate callback');
+            this.onActivate(this);
         }
     }
 

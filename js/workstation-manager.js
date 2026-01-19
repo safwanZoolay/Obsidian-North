@@ -64,6 +64,10 @@ class WorkstationManager {
     }
 
     activateWorkstation(workstation, project) {
+        console.log('WorkstationManager.activateWorkstation called');
+        console.log('Project:', project);
+        console.log('Workstation:', workstation);
+
         // Deactivate previous
         if (this.activeWorkstation) {
             this.activeWorkstation.deactivate();
@@ -74,7 +78,10 @@ class WorkstationManager {
 
         // Call external callback with project data
         if (this.onActivate) {
+            console.log('Calling onActivate callback');
             this.onActivate(project, workstation);
+        } else {
+            console.error('No onActivate callback defined!');
         }
     }
 
