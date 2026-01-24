@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian North - Command Center</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Main Canvas for 3D Scene -->
+    <canvas id="command-canvas"></canvas>
+
+    <!-- Welcome Overlay -->
+    <div id="welcome-overlay" class="active">
+        <div class="welcome-content">
+            <h1 class="cyber-title" data-text="OBSIDIAN NORTH">OBSIDIAN NORTH</h1>
+            <p class="tagline">COMMAND CENTER</p>
+            <p class="instruction">INITIALIZING SYSTEMS...</p>
+            <button id="enter-btn" class="cyber-button">ACCESS WORKSTATION</button>
+        </div>
+    </div>
+
+    <!-- Workstation Detail Panel -->
+    <div id="workstation-panel" class="hidden">
+        <div class="panel-header">
+            <h2 class="panel-title">PROJECT ALPHA</h2>
+            <button id="close-panel" class="close-btn">×</button>
+        </div>
+
+        <div class="panel-content">
+            <div class="project-section">
+                <h3 class="section-title">// MISSION BRIEF</h3>
+                <p class="section-text" id="mission-text"></p>
+            </div>
+
+            <div class="project-section">
+                <h3 class="section-title">// THE CHALLENGE</h3>
+                <p class="section-text" id="challenge-text"></p>
+            </div>
+
+            <div class="project-section">
+                <h3 class="section-title">// THE SOLUTION</h3>
+                <p class="section-text" id="solution-text"></p>
+            </div>
+
+            <div class="project-section">
+                <h3 class="section-title">// THE IMPACT</h3>
+                <p class="section-text impact-text" id="impact-text"></p>
+            </div>
+
+            <div class="project-section">
+                <h3 class="section-title">// TECH STACK</h3>
+                <div class="tech-tags"></div>
+            </div>
+
+            <div class="project-section">
+                <h3 class="section-title">// METRICS</h3>
+                <div class="metrics"></div>
+            </div>
+
+            <div class="project-section">
+                <h3 class="section-title">// LINKS</h3>
+                <div class="project-links">
+                    <a id="github-link" class="project-link" href="#" target="_blank" rel="noopener">
+                        <span class="link-icon">⟨/⟩</span> View Source
+                    </a>
+                    <a id="live-link" class="project-link" href="#" target="_blank" rel="noopener">
+                        <span class="link-icon">🚀</span> Live Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HUD Elements -->
+    <div id="hud">
+        <div class="hud-top">
+            <div class="hud-logo">OBSIDIAN_NORTH://</div>
+            <div class="hud-status">
+                <span class="status-indicator"></span>
+                <span class="status-text">SYSTEM ONLINE</span>
+            </div>
+        </div>
+        <div class="hud-bottom">
+            <div class="hud-hint" id="interaction-hint">
+                Click workstation to access
+            </div>
+            <div class="hud-stats">
+                <span>FPS: <span id="fps">60</span></span>
+                <span style="margin-left: 20px;" id="debug-info"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Load our scripts -->
+    <script src="js/shaders.js"></script>
+    <script src="js/grid.js"></script>
+    <script src="js/workstation.js"></script>
+    <script src="js/workstation-manager.js"></script>
+    <script src="js/central-menu.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

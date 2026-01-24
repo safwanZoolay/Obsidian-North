@@ -3,104 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obsidian North - Command Center</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Obsidian North - Custom Software Development & AI Automation</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <!-- Main Canvas for 3D Scene -->
-    <canvas id="command-canvas"></canvas>
-
-    <!-- Welcome Overlay -->
-    <div id="welcome-overlay" class="active">
-        <div class="welcome-content">
-            <h1 class="cyber-title" data-text="OBSIDIAN NORTH">OBSIDIAN NORTH</h1>
-            <p class="tagline">COMMAND CENTER</p>
-            <p class="instruction">INITIALIZING SYSTEMS...</p>
-            <button id="enter-btn" class="cyber-button">ACCESS WORKSTATION</button>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="nav-logo">OBSIDIAN NORTH</div>
+            <div class="nav-links">
+                <a href="#services">Services</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#contact" class="nav-cta">Get Started</a>
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- Workstation Detail Panel -->
-    <div id="workstation-panel" class="hidden">
-        <div class="panel-header">
-            <h2 class="panel-title">PROJECT ALPHA</h2>
-            <button id="close-panel" class="close-btn">×</button>
-        </div>
+    <!-- Hero Section with AI Chat -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Ship Custom Software<br/>
+                <span class="gradient-text">10x Faster</span>
+            </h1>
+            <p class="hero-subtitle">
+                Custom web apps, AI automation, and expert consultations.<br/>
+                Ask our AI anything about your project.
+            </p>
 
-        <div class="panel-content">
-            <div class="project-section">
-                <h3 class="section-title">// MISSION BRIEF</h3>
-                <p class="section-text" id="mission-text"></p>
+            <!-- AI Chat Interface -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-avatar"></div>
+                    <div class="chat-info">
+                        <div class="chat-name">Obsidian AI</div>
+                        <div class="chat-status">
+                            <span class="status-dot"></span> Online - Avg response: 2s
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            👋 Hi! I'm your AI consultant. I can help you:
+                            <ul>
+                                <li>Estimate your project cost & timeline</li>
+                                <li>Explain our services & tech stack</li>
+                                <li>Schedule a consultation</li>
+                                <li>Answer technical questions</li>
+                            </ul>
+                            What would you like to know?
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="quick-actions">
+                        <button class="quick-btn" data-prompt="What services do you offer?">
+                            💡 Services
+                        </button>
+                        <button class="quick-btn" data-prompt="How much does a custom web app cost?">
+                            💰 Pricing
+                        </button>
+                        <button class="quick-btn" data-prompt="I need help with AI automation">
+                            🤖 AI Automation
+                        </button>
+                        <button class="quick-btn" data-prompt="Schedule a consultation">
+                            📅 Book a Call
+                        </button>
+                    </div>
+                    <div class="chat-input">
+                        <input
+                            type="text"
+                            id="chat-input"
+                            placeholder="Ask about your project..."
+                            autocomplete="off"
+                        />
+                        <button id="chat-send" class="send-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2 10L18 2L11 18L9 11L2 10Z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div class="project-section">
-                <h3 class="section-title">// THE CHALLENGE</h3>
-                <p class="section-text" id="challenge-text"></p>
-            </div>
-
-            <div class="project-section">
-                <h3 class="section-title">// THE SOLUTION</h3>
-                <p class="section-text" id="solution-text"></p>
-            </div>
-
-            <div class="project-section">
-                <h3 class="section-title">// THE IMPACT</h3>
-                <p class="section-text impact-text" id="impact-text"></p>
-            </div>
-
-            <div class="project-section">
-                <h3 class="section-title">// TECH STACK</h3>
-                <div class="tech-tags"></div>
-            </div>
-
-            <div class="project-section">
-                <h3 class="section-title">// METRICS</h3>
-                <div class="metrics"></div>
-            </div>
-
-            <div class="project-section">
-                <h3 class="section-title">// LINKS</h3>
-                <div class="project-links">
-                    <a id="github-link" class="project-link" href="#" target="_blank" rel="noopener">
-                        <span class="link-icon">⟨/⟩</span> View Source
-                    </a>
-                    <a id="live-link" class="project-link" href="#" target="_blank" rel="noopener">
-                        <span class="link-icon">🚀</span> Live Demo
-                    </a>
+            <!-- Trust Indicators -->
+            <div class="trust-indicators">
+                <div class="trust-item">
+                    <div class="trust-value">50+</div>
+                    <div class="trust-label">Projects Delivered</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-value">4-8 weeks</div>
+                    <div class="trust-label">Avg. MVP Time</div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-value">100%</div>
+                    <div class="trust-label">Client Satisfaction</div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- HUD Elements -->
-    <div id="hud">
-        <div class="hud-top">
-            <div class="hud-logo">OBSIDIAN_NORTH://</div>
-            <div class="hud-status">
-                <span class="status-indicator"></span>
-                <span class="status-text">SYSTEM ONLINE</span>
+    <!-- How It Works - Scroll Animation -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-header">
+            <h2 class="section-title">How We Build Your App</h2>
+            <p class="section-subtitle">From idea to production-ready software</p>
+        </div>
+
+        <div class="build-animation">
+            <!-- Stage 1: Wireframe -->
+            <div class="build-stage" data-stage="1">
+                <div class="stage-visual" id="wireframe-canvas"></div>
+                <div class="stage-content">
+                    <div class="stage-number">01</div>
+                    <h3 class="stage-title">Design & Planning</h3>
+                    <p class="stage-description">
+                        We start with wireframes and system architecture.
+                        Every component is planned before a single line of code is written.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stage 2: Code -->
+            <div class="build-stage" data-stage="2">
+                <div class="stage-visual" id="code-canvas"></div>
+                <div class="stage-content">
+                    <div class="stage-number">02</div>
+                    <h3 class="stage-title">Development</h3>
+                    <p class="stage-description">
+                        Clean, modern code built with the latest tech.
+                        React, Next.js, Node.js, AI integration - we use what works.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stage 3: Live App -->
+            <div class="build-stage" data-stage="3">
+                <div class="stage-visual" id="app-canvas"></div>
+                <div class="stage-content">
+                    <div class="stage-number">03</div>
+                    <h3 class="stage-title">Launch & Support</h3>
+                    <p class="stage-description">
+                        Your app goes live with monitoring, analytics, and ongoing support.
+                        We don't disappear after launch.
+                    </p>
+                </div>
             </div>
         </div>
-        <div class="hud-bottom">
-            <div class="hud-hint" id="interaction-hint">
-                Click workstation to access
+    </section>
+
+    <!-- Services Grid -->
+    <section class="services" id="services">
+        <div class="section-header">
+            <h2 class="section-title">What We Build</h2>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🚀</div>
+                <h3 class="service-title">Custom Web Apps</h3>
+                <p class="service-description">
+                    Full-stack applications built with React, Next.js, and Node.js.
+                    From MVP to enterprise-scale.
+                </p>
+                <ul class="service-features">
+                    <li>SaaS platforms</li>
+                    <li>Admin dashboards</li>
+                    <li>E-commerce solutions</li>
+                    <li>API development</li>
+                </ul>
             </div>
-            <div class="hud-stats">
-                <span>FPS: <span id="fps">60</span></span>
-                <span style="margin-left: 20px;" id="debug-info"></span>
+
+            <div class="service-card featured">
+                <div class="service-badge">Most Popular</div>
+                <div class="service-icon">🤖</div>
+                <h3 class="service-title">AI Automation</h3>
+                <p class="service-description">
+                    Integrate GPT-4, custom AI models, and automation workflows
+                    into your existing or new applications.
+                </p>
+                <ul class="service-features">
+                    <li>AI chatbots & assistants</li>
+                    <li>Document processing</li>
+                    <li>Workflow automation</li>
+                    <li>Data analysis & insights</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">💡</div>
+                <h3 class="service-title">Technical Consulting</h3>
+                <p class="service-description">
+                    Expert guidance on architecture, tech stack, and strategy.
+                    Perfect for CTOs and technical founders.
+                </p>
+                <ul class="service-features">
+                    <li>Architecture review</li>
+                    <li>Performance optimization</li>
+                    <li>Tech stack selection</li>
+                    <li>Code audits</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Build Something Great?</h2>
+            <p class="cta-subtitle">
+                Chat with our AI or schedule a call to get started
+            </p>
+            <div class="cta-buttons">
+                <button class="cta-btn primary" id="scroll-to-chat">
+                    💬 Chat with AI
+                </button>
+                <button class="cta-btn secondary" id="schedule-call">
+                    📅 Schedule a Call
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">OBSIDIAN NORTH</div>
+                <p>Building exceptional software since 2020</p>
+            </div>
+            <div class="footer-links">
+                <a href="mailto:hello@obsidiannorth.com">hello@obsidiannorth.com</a>
+                <a href="https://github.com/obsidiannorth" target="_blank">GitHub</a>
+                <a href="https://linkedin.com/company/obsidiannorth" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Obsidian North. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Booking Modal (hidden by default) -->
+    <div class="modal" id="booking-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-modal">&times;</button>
+            <h3 class="modal-title">Schedule a Consultation</h3>
+            <div class="calendar-embed" id="calendar-embed">
+                <!-- Calendar will be embedded here -->
+                <p style="text-align: center; color: #888; padding: 2rem;">
+                    Calendar integration coming soon...<br/>
+                    Email us at: <a href="mailto:hello@obsidiannorth.com">hello@obsidiannorth.com</a>
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Load Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <!-- Load our scripts -->
-    <script src="js/shaders.js"></script>
-    <script src="js/grid.js"></script>
-    <script src="js/workstation.js"></script>
-    <script src="js/workstation-manager.js"></script>
-    <script src="js/central-menu.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
