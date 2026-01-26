@@ -219,105 +219,190 @@ class ObsidianApp {
     }
 
     setupScrollAnimations() {
-        const stages = document.querySelectorAll('.build-stage');
+        // Continuous scroll-driven animation
+        const howItWorksSection = document.getElementById('how-it-works');
+        if (!howItWorksSection) return;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, {
-            threshold: 0.3
+        let ticking = false;
+
+        const updateBuildAnimation = () => {
+            const rect = howItWorksSection.getBoundingClientRect();
+            const sectionHeight = howItWorksSection.offsetHeight;
+            const windowHeight = window.innerHeight;
+
+            // Calculate scroll progress (0 to 1)
+            // Start when section enters viewport, end when it leaves
+            const startOffset = windowHeight * 0.3;
+            const scrollStart = -rect.top + startOffset;
+            const scrollRange = sectionHeight - windowHeight + startOffset;
+            let progress = Math.max(0, Math.min(1, scrollStart / scrollRange));
+
+            this.updateBuildStage(progress);
+
+            ticking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateBuildAnimation);
+                ticking = true;
+            }
         });
 
-        stages.forEach(stage => observer.observe(stage));
+        // Initial update
+        updateBuildAnimation();
+    }
+
+    updateBuildStage(progress) {
+        // Update progress bar
+        const progressBar = document.getElementById('build-progress');
+        if (progressBar) {
+            progressBar.style.width = `${progress * 100}%`;
+        }
+
+        // Get SVG elements
+        const gridBg = document.getElementById('grid-bg');
+        const wireframeGroup = document.getElementById('wireframe-group');
+        const componentsGroup = document.getElementById('components-group');
+        const appGroup = document.getElementById('app-group');
+        const codeOverlay = document.getElementById('code-overlay');
+
+        // Get stage label elements
+        const stageNumber = document.getElementById('stage-number');
+        const stageTitle = document.getElementById('stage-title');
+        const stageDesc = document.getElementById('stage-desc');
+
+        if (!wireframeGroup) return;
+
+        // Define stages based on progress
+        // 0-0.2: Grid appears
+        // 0.2-0.4: Wireframe draws in
+        // 0.4-0.5: Components fill with color
+        // 0.5-0.65: Code overlay appears
+        // 0.65-0.8: Code fades, final app appears
+        // 0.8-1.0: Final polished state
+
+        // Stage 1: Grid (0-0.2)
+        if (progress < 0.2) {
+            const gridProgress = progress / 0.2;
+            if (gridBg) gridBg.setAttribute('opacity', gridProgress * 0.5);
+            if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
+            if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
+            if (appGroup) appGroup.setAttribute('opacity', '0');
+            if (codeOverlay) codeOverlay.classList.remove('active');
+
+            if (stageNumber) stageNumber.textContent = '01';
+            if (stageTitle) stageTitle.textContent = 'Design & Planning';
+            if (stageDesc) stageDesc.textContent = 'Starting with a clean canvas';
+        }
+
+        // Stage 2: Wireframe (0.2-0.4)
+        else if (progress < 0.4) {
+            const wireframeProgress = (progress - 0.2) / 0.2;
+            if (gridBg) gridBg.setAttribute('opacity', '0.5');
+            if (wireframeGroup) wireframeGroup.setAttribute('opacity', wireframeProgress);
+
+            // Animate stroke-dashoffset for drawing effect
+            const wireframeBoxes = wireframeGroup.querySelectorAll('.wireframe-box');
+            wireframeBoxes.forEach(box => {
+                const length = box.getAttribute('stroke-dasharray');
+                if (length) {
+                    const offset = parseFloat(length) * (1 - wireframeProgress);
+                    box.setAttribute('stroke-dashoffset', offset);
+                }
+            });
+
+            const wireframeLines = wireframeGroup.querySelectorAll('.wireframe-line');
+            wireframeLines.forEach(line => {
+                const length = line.getAttribute('stroke-dasharray');
+                if (length) {
+                    const offset = parseFloat(length) * (1 - wireframeProgress);
+                    line.setAttribute('stroke-dashoffset', offset);
+                }
+            });
+
+            if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
+            if (appGroup) appGroup.setAttribute('opacity', '0');
+            if (codeOverlay) codeOverlay.classList.remove('active');
+
+            if (stageNumber) stageNumber.textContent = '01';
+            if (stageTitle) stageTitle.textContent = 'Design & Planning';
+            if (stageDesc) stageDesc.textContent = 'Wireframing the architecture';
+        }
+
+        // Stage 3: Components (0.4-0.5)
+        else if (progress < 0.5) {
+            const componentProgress = (progress - 0.4) / 0.1;
+            if (gridBg) gridBg.setAttribute('opacity', 0.5 * (1 - componentProgress));
+            if (wireframeGroup) wireframeGroup.setAttribute('opacity', 1 - componentProgress);
+            if (componentsGroup) componentsGroup.setAttribute('opacity', componentProgress);
+            if (appGroup) appGroup.setAttribute('opacity', '0');
+            if (codeOverlay) codeOverlay.classList.remove('active');
+
+            if (stageNumber) stageNumber.textContent = '01';
+            if (stageTitle) stageTitle.textContent = 'Design & Planning';
+            if (stageDesc) stageDesc.textContent = 'Adding structure and components';
+        }
+
+        // Stage 4: Code overlay (0.5-0.65)
+        else if (progress < 0.65) {
+            const codeProgress = (progress - 0.5) / 0.15;
+            if (gridBg) gridBg.setAttribute('opacity', '0');
+            if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
+            if (componentsGroup) componentsGroup.setAttribute('opacity', 1 - codeProgress * 0.5);
+            if (appGroup) appGroup.setAttribute('opacity', '0');
+
+            if (codeProgress > 0.2 && codeOverlay) {
+                codeOverlay.classList.add('active');
+            }
+
+            if (stageNumber) stageNumber.textContent = '02';
+            if (stageTitle) stageTitle.textContent = 'Development';
+            if (stageDesc) stageDesc.textContent = 'Writing clean, modern code';
+        }
+
+        // Stage 5: Final app (0.65-0.8)
+        else if (progress < 0.8) {
+            const appProgress = (progress - 0.65) / 0.15;
+            if (gridBg) gridBg.setAttribute('opacity', '0');
+            if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
+            if (componentsGroup) componentsGroup.setAttribute('opacity', Math.max(0, 0.5 - appProgress * 0.5));
+            if (appGroup) appGroup.setAttribute('opacity', appProgress);
+
+            if (appProgress > 0.3 && codeOverlay) {
+                codeOverlay.classList.remove('active');
+            }
+
+            if (stageNumber) stageNumber.textContent = '03';
+            if (stageTitle) stageTitle.textContent = 'Launch & Support';
+            if (stageDesc) stageDesc.textContent = 'Deploying your application';
+        }
+
+        // Stage 6: Polished (0.8-1.0)
+        else {
+            if (gridBg) gridBg.setAttribute('opacity', '0');
+            if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
+            if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
+            if (appGroup) appGroup.setAttribute('opacity', '1');
+            if (codeOverlay) codeOverlay.classList.remove('active');
+
+            if (stageNumber) stageNumber.textContent = '03';
+            if (stageTitle) stageTitle.textContent = 'Launch & Support';
+            if (stageDesc) stageDesc.textContent = 'Production-ready and fully supported';
+        }
     }
 
     setupCanvas() {
-        // Setup canvas animations for wireframe, code, and app stages
-        this.animateWireframe();
-        this.animateCode();
-        this.animateApp();
-    }
-
-    animateWireframe() {
-        const canvas = document.getElementById('wireframe-canvas');
+        // Canvas setup if needed for additional effects
+        const canvas = document.getElementById('build-canvas');
         if (!canvas) return;
 
-        canvas.innerHTML = `
-            <svg width="100%" height="100%" viewBox="0 0 400 300" style="opacity: 0.6;">
-                <style>
-                    .wireframe-line { stroke: #3b82f6; stroke-width: 2; fill: none; opacity: 0.5; }
-                    .wireframe-box { fill: rgba(59, 130, 246, 0.1); stroke: #3b82f6; stroke-width: 1; }
-                    @keyframes drawLine {
-                        from { stroke-dashoffset: 1000; }
-                        to { stroke-dashoffset: 0; }
-                    }
-                    .animated-line {
-                        stroke-dasharray: 1000;
-                        animation: drawLine 2s ease-in-out infinite;
-                    }
-                </style>
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+        canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-                <!-- Header -->
-                <rect class="wireframe-box" x="20" y="20" width="360" height="40" rx="4"/>
-
-                <!-- Sidebar -->
-                <rect class="wireframe-box" x="20" y="80" width="80" height="200" rx="4"/>
-
-                <!-- Content boxes -->
-                <rect class="wireframe-box" x="120" y="80" width="260" height="60" rx="4"/>
-                <rect class="wireframe-box" x="120" y="160" width="260" height="60" rx="4"/>
-                <rect class="wireframe-box" x="120" y="240" width="120" height="40" rx="4"/>
-                <rect class="wireframe-box" x="260" y="240" width="120" height="40" rx="4"/>
-
-                <!-- Animated connection lines -->
-                <line class="wireframe-line animated-line" x1="60" y1="80" x2="120" y2="100"/>
-                <line class="wireframe-line animated-line" x1="60" y1="180" x2="120" y2="180"/>
-            </svg>
-        `;
-    }
-
-    animateCode() {
-        const canvas = document.getElementById('code-canvas');
-        if (!canvas) return;
-
-        const codeSnippet = `<span style="color: #8b5cf6">const</span> app = {
-  <span style="color: #06b6d4">name</span>: <span style="color: #10b981">'Obsidian North'</span>,
-  <span style="color: #06b6d4">build</span>: () => {
-    <span style="color: #8b5cf6">return</span> <span style="color: #10b981">'Amazing software'</span>
-  }
-}`;
-
-        canvas.innerHTML = `
-            <pre style="color: #9ca3af; font-family: monospace; font-size: 14px; line-height: 1.8; text-align: left; padding: 2rem;">
-${codeSnippet}
-            </pre>
-        `;
-    }
-
-    animateApp() {
-        const canvas = document.getElementById('app-canvas');
-        if (!canvas) return;
-
-        canvas.innerHTML = `
-            <div style="width: 90%; height: 90%; background: rgba(10, 10, 15, 0.8); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-                    <div style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444;"></div>
-                    <div style="width: 12px; height: 12px; border-radius: 50%; background: #f59e0b;"></div>
-                    <div style="width: 12px; height: 12px; border-radius: 50%; background: #10b981;"></div>
-                </div>
-                <div style="height: 30px; background: rgba(59, 130, 246, 0.2); border-radius: 6px;"></div>
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 0.5rem; flex: 1;">
-                    <div style="background: rgba(59, 130, 246, 0.1); border-radius: 6px;"></div>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <div style="height: 40%; background: rgba(139, 92, 246, 0.1); border-radius: 6px;"></div>
-                        <div style="height: 60%; background: rgba(6, 182, 212, 0.1); border-radius: 6px;"></div>
-                    </div>
-                </div>
-            </div>
-        `;
+        // Optionally add particle effects or background animations here
     }
 }
 

@@ -107,52 +107,163 @@
         </div>
     </section>
 
-    <!-- How It Works - Scroll Animation -->
+    <!-- How It Works - Continuous Scroll Animation -->
     <section class="how-it-works" id="how-it-works">
         <div class="section-header">
             <h2 class="section-title">How We Build Your App</h2>
-            <p class="section-subtitle">From idea to production-ready software</p>
+            <p class="section-subtitle">Watch it come to life as you scroll</p>
         </div>
 
-        <div class="build-animation">
-            <!-- Stage 1: Wireframe -->
-            <div class="build-stage" data-stage="1">
-                <div class="stage-visual" id="wireframe-canvas"></div>
-                <div class="stage-content">
-                    <div class="stage-number">01</div>
-                    <h3 class="stage-title">Design & Planning</h3>
-                    <p class="stage-description">
-                        We start with wireframes and system architecture.
-                        Every component is planned before a single line of code is written.
-                    </p>
-                </div>
-            </div>
+        <!-- Scroll Progress Indicator -->
+        <div class="scroll-progress-container">
+            <div class="scroll-progress-bar" id="build-progress"></div>
+        </div>
 
-            <!-- Stage 2: Code -->
-            <div class="build-stage" data-stage="2">
-                <div class="stage-visual" id="code-canvas"></div>
-                <div class="stage-content">
-                    <div class="stage-number">02</div>
-                    <h3 class="stage-title">Development</h3>
-                    <p class="stage-description">
-                        Clean, modern code built with the latest tech.
-                        React, Next.js, Node.js, AI integration - we use what works.
-                    </p>
-                </div>
-            </div>
+        <!-- Continuous Build Animation Container -->
+        <div class="continuous-build-container">
+            <!-- Canvas that transforms -->
+            <div class="build-canvas-container">
+                <canvas id="build-canvas"></canvas>
 
-            <!-- Stage 3: Live App -->
-            <div class="build-stage" data-stage="3">
-                <div class="stage-visual" id="app-canvas"></div>
-                <div class="stage-content">
-                    <div class="stage-number">03</div>
-                    <h3 class="stage-title">Launch & Support</h3>
-                    <p class="stage-description">
-                        Your app goes live with monitoring, analytics, and ongoing support.
-                        We don't disappear after launch.
-                    </p>
+                <!-- SVG Layer for vector graphics -->
+                <svg id="build-svg" class="build-svg-layer" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <!-- Grid pattern -->
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(59, 130, 246, 0.1)" stroke-width="1"/>
+                        </pattern>
+
+                        <!-- Glow filter -->
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Background grid -->
+                    <rect id="grid-bg" width="800" height="600" fill="url(#grid)" opacity="0"/>
+
+                    <!-- Wireframe elements (draw in progressively) -->
+                    <g id="wireframe-group" opacity="0">
+                        <!-- Header -->
+                        <rect class="wireframe-box" x="50" y="50" width="700" height="80" rx="8"
+                              stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="1560" stroke-dashoffset="1560"/>
+
+                        <!-- Sidebar -->
+                        <rect class="wireframe-box" x="50" y="150" width="200" height="400" rx="8"
+                              stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="1200" stroke-dashoffset="1200"/>
+
+                        <!-- Content card 1 -->
+                        <rect class="wireframe-box" x="270" y="150" width="480" height="120" rx="8"
+                              stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="1200" stroke-dashoffset="1200"/>
+
+                        <!-- Content card 2 -->
+                        <rect class="wireframe-box" x="270" y="290" width="480" height="120" rx="8"
+                              stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="1200" stroke-dashoffset="1200"/>
+
+                        <!-- Button 1 -->
+                        <rect class="wireframe-box" x="270" y="430" width="230" height="60" rx="8"
+                              stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="580" stroke-dashoffset="580"/>
+
+                        <!-- Button 2 -->
+                        <rect class="wireframe-box" x="520" y="430" width="230" height="60" rx="8"
+                              stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="580" stroke-dashoffset="580"/>
+
+                        <!-- Connection lines -->
+                        <line class="wireframe-line" x1="150" y1="150" x2="270" y2="180"
+                              stroke="#3b82f6" stroke-width="1" opacity="0.5" stroke-dasharray="200" stroke-dashoffset="200"/>
+                        <line class="wireframe-line" x1="150" y1="350" x2="270" y2="320"
+                              stroke="#3b82f6" stroke-width="1" opacity="0.5" stroke-dasharray="200" stroke-dashoffset="200"/>
+                    </g>
+
+                    <!-- Filled components (fade in after wireframe) -->
+                    <g id="components-group" opacity="0">
+                        <!-- Header with gradient -->
+                        <rect x="50" y="50" width="700" height="80" rx="8" fill="rgba(59, 130, 246, 0.1)" stroke="#3b82f6" stroke-width="1"/>
+
+                        <!-- Sidebar -->
+                        <rect x="50" y="150" width="200" height="400" rx="8" fill="rgba(59, 130, 246, 0.05)" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1"/>
+
+                        <!-- Content cards -->
+                        <rect x="270" y="150" width="480" height="120" rx="8" fill="rgba(139, 92, 246, 0.1)" stroke="rgba(139, 92, 246, 0.3)" stroke-width="1"/>
+                        <rect x="270" y="290" width="480" height="120" rx="8" fill="rgba(6, 182, 212, 0.1)" stroke="rgba(6, 182, 212, 0.3)" stroke-width="1"/>
+
+                        <!-- Buttons -->
+                        <rect x="270" y="430" width="230" height="60" rx="8" fill="rgba(59, 130, 246, 0.2)" stroke="#3b82f6" stroke-width="1"/>
+                        <rect x="520" y="430" width="230" height="60" rx="8" fill="rgba(139, 92, 246, 0.2)" stroke="#8b5cf6" stroke-width="1"/>
+                    </g>
+
+                    <!-- Final polished app (fade in last) -->
+                    <g id="app-group" opacity="0">
+                        <!-- Header with window controls -->
+                        <rect x="50" y="50" width="700" height="80" rx="8" fill="rgba(10, 10, 15, 0.9)" stroke="rgba(59, 130, 246, 0.5)" stroke-width="2"/>
+                        <circle cx="70" cy="90" r="6" fill="#ef4444"/>
+                        <circle cx="95" cy="90" r="6" fill="#f59e0b"/>
+                        <circle cx="120" cy="90" r="6" fill="#10b981"/>
+
+                        <!-- Sidebar with nav items -->
+                        <rect x="50" y="150" width="200" height="400" rx="8" fill="rgba(20, 20, 30, 0.9)" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1"/>
+                        <rect x="65" y="170" width="170" height="40" rx="6" fill="rgba(59, 130, 246, 0.2)"/>
+                        <rect x="65" y="225" width="170" height="40" rx="6" fill="rgba(59, 130, 246, 0.05)"/>
+                        <rect x="65" y="280" width="170" height="40" rx="6" fill="rgba(59, 130, 246, 0.05)"/>
+
+                        <!-- Content with data -->
+                        <rect x="270" y="150" width="480" height="120" rx="8" fill="rgba(30, 30, 45, 0.9)" stroke="rgba(139, 92, 246, 0.4)" stroke-width="1"/>
+                        <rect x="285" y="165" width="450" height="12" rx="4" fill="rgba(139, 92, 246, 0.3)"/>
+                        <rect x="285" y="185" width="350" height="8" rx="4" fill="rgba(139, 92, 246, 0.2)"/>
+                        <rect x="285" y="200" width="400" height="8" rx="4" fill="rgba(139, 92, 246, 0.2)"/>
+
+                        <rect x="270" y="290" width="480" height="120" rx="8" fill="rgba(30, 30, 45, 0.9)" stroke="rgba(6, 182, 212, 0.4)" stroke-width="1"/>
+                        <rect x="285" y="305" width="450" height="12" rx="4" fill="rgba(6, 182, 212, 0.3)"/>
+                        <rect x="285" y="325" width="300" height="8" rx="4" fill="rgba(6, 182, 212, 0.2)"/>
+                        <rect x="285" y="340" width="380" height="8" rx="4" fill="rgba(6, 182, 212, 0.2)"/>
+
+                        <!-- Gradient buttons -->
+                        <rect x="270" y="430" width="230" height="60" rx="8" fill="url(#button-gradient-1)" filter="url(#glow)"/>
+                        <rect x="520" y="430" width="230" height="60" rx="8" fill="url(#button-gradient-2)" filter="url(#glow)"/>
+
+                        <defs>
+                            <linearGradient id="button-gradient-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            </linearGradient>
+                            <linearGradient id="button-gradient-2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </g>
+                </svg>
+
+                <!-- Code overlay -->
+                <div class="code-overlay" id="code-overlay">
+                    <div class="code-content">
+                        <div class="code-line"><span class="keyword">const</span> app = {</div>
+                        <div class="code-line">  <span class="property">name</span>: <span class="string">'Obsidian North'</span>,</div>
+                        <div class="code-line">  <span class="property">build</span>: () => {</div>
+                        <div class="code-line">    <span class="keyword">return</span> <span class="string">'Amazing software'</span></div>
+                        <div class="code-line">  }</div>
+                        <div class="code-line">}</div>
+                    </div>
+                </div>
+
+                <!-- Stage labels -->
+                <div class="stage-label" id="stage-label">
+                    <div class="stage-number" id="stage-number">01</div>
+                    <div class="stage-info">
+                        <div class="stage-title" id="stage-title">Design & Planning</div>
+                        <div class="stage-desc" id="stage-desc">Wireframing the architecture</div>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Scroll hint -->
+        <div class="scroll-hint">
+            <p>Scroll to see the process ↓</p>
         </div>
     </section>
 
