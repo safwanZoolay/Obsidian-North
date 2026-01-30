@@ -10,6 +10,15 @@ class ObsidianApp {
         this.quickButtons = document.querySelectorAll('.quick-btn');
         this.isTyping = false;
 
+        // Interactive app elements
+        this.interactiveApp = document.getElementById('interactive-app');
+        this.appMessages = document.getElementById('app-messages');
+        this.appInput = document.getElementById('app-input');
+        this.appSend = document.getElementById('app-send');
+        this.appQuickButtons = document.querySelectorAll('.app-quick-btn');
+        this.isAppTyping = false;
+        this.appEnabled = false;
+
         this.init();
     }
 
@@ -38,6 +47,9 @@ class ObsidianApp {
             });
         });
 
+        // Interactive app event listeners
+        this.setupAppEventListeners();
+
         // CTA buttons
         document.getElementById('scroll-to-chat')?.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -58,6 +70,33 @@ class ObsidianApp {
             if (e.target.id === 'booking-modal') {
                 this.closeBookingModal();
             }
+        });
+    }
+
+    setupAppEventListeners() {
+        // Interactive app chat handlers
+        if (this.appSend) {
+            this.appSend.addEventListener('click', () => this.sendAppMessage());
+        }
+
+        if (this.appInput) {
+            this.appInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendAppMessage();
+                }
+            });
+        }
+
+        // Interactive app quick action buttons
+        this.appQuickButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const prompt = btn.getAttribute('data-app-prompt');
+                if (this.appInput) {
+                    this.appInput.value = prompt;
+                    this.sendAppMessage();
+                }
+            });
         });
     }
 
@@ -200,6 +239,59 @@ class ObsidianApp {
             • Answering technical questions
             <br/><br/>
             What would you like to know more about?`;
+    }
+
+    // Interactive App Chat Methods
+    async sendAppMessage() {
+        if (!this.appEnabled) return; // Only allow messages when app is enabled
+
+        const message = this.appInput.value.trim();
+        if (!message || this.isAppTyping) return;
+
+        // Add user message to app
+        this.addAppMessage(message, 'user');
+        this.appInput.value = '';
+
+        // Show typing indicator
+        this.showAppTyping();
+
+        // Simulate AI response
+        setTimeout(() => {
+            const response = this.getAIResponse(message);
+            this.hideAppTyping();
+            this.addAppMessage(response, 'bot');
+        }, 1500);
+    }
+
+    addAppMessage(content, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.innerHTML = content;
+
+        messageDiv.appendChild(contentDiv);
+        this.appMessages.appendChild(messageDiv);
+
+        // Scroll to bottom
+        this.appMessages.scrollTop = this.appMessages.scrollHeight;
+    }
+
+    showAppTyping() {
+        this.isAppTyping = true;
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message typing-indicator';
+        typingDiv.id = 'app-typing-indicator';
+        typingDiv.innerHTML = '<div class="message-content">●●●</div>';
+        this.appMessages.appendChild(typingDiv);
+        this.appMessages.scrollTop = this.appMessages.scrollHeight;
+    }
+
+    hideAppTyping() {
+        this.isAppTyping = false;
+        const typing = document.getElementById('app-typing-indicator');
+        if (typing) typing.remove();
     }
 
     openBookingModal() {
@@ -378,17 +470,53 @@ class ObsidianApp {
             if (stageDesc) stageDesc.textContent = 'Deploying your application';
         }
 
-        // Stage 6: Polished (0.8-1.0)
-        else {
+        // Stage 6: Polished (0.8-0.95)
+        else if (progress < 0.95) {
             if (gridBg) gridBg.setAttribute('opacity', '0');
             if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
             if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
             if (appGroup) appGroup.setAttribute('opacity', '1');
             if (codeOverlay) codeOverlay.classList.remove('active');
 
+            // Ensure interactive app is hidden
+            if (this.interactiveApp) this.interactiveApp.classList.remove('active');
+            this.appEnabled = false;
+
             if (stageNumber) stageNumber.textContent = '03';
             if (stageTitle) stageTitle.textContent = 'Launch & Support';
             if (stageDesc) stageDesc.textContent = 'Production-ready and fully supported';
+        }
+
+        // Stage 7: Interactive App (0.95-1.0)
+        else {
+            if (gridBg) gridBg.setAttribute('opacity', '0');
+            if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
+            if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
+
+            // Fade out SVG app, fade in interactive app
+            const appTransition = (progress - 0.95) / 0.05;
+            if (appGroup) appGroup.setAttribute('opacity', Math.max(0, 1 - appTransition));
+            if (codeOverlay) codeOverlay.classList.remove('active');
+
+            // Enable interactive app
+            if (this.interactiveApp && appTransition > 0.3) {
+                this.interactiveApp.classList.add('active');
+                this.appEnabled = true;
+
+                // Focus input when fully visible
+                if (appTransition > 0.8 && this.appInput && document.activeElement !== this.appInput) {
+                    // Only focus if user hasn't already focused something else
+                    setTimeout(() => {
+                        if (document.activeElement === document.body) {
+                            this.appInput.focus();
+                        }
+                    }, 300);
+                }
+            }
+
+            if (stageNumber) stageNumber.textContent = '🎉';
+            if (stageTitle) stageTitle.textContent = 'App Launched!';
+            if (stageDesc) stageDesc.textContent = 'Try it out - it\'s fully functional';
         }
     }
 

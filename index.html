@@ -109,9 +109,43 @@
 
     <!-- How It Works - Continuous Scroll Animation -->
     <section class="how-it-works" id="how-it-works">
-        <div class="section-header">
-            <h2 class="section-title">How We Build Your App</h2>
-            <p class="section-subtitle">Watch it come to life as you scroll</p>
+        <!-- Intro Section -->
+        <div class="build-intro">
+            <div class="intro-content">
+                <div class="intro-badge">⚡ LIVE DEMO</div>
+                <h2 class="intro-title">
+                    Most companies <span class="text-muted">show</span> you their work.<br/>
+                    We'll <span class="gradient-text">build something for you</span>, right now.
+                </h2>
+                <p class="intro-description">
+                    In the next 30 seconds, you'll watch us build a custom AI assistant from scratch.
+                    Then you'll actually use it to get answers about your project.
+                    <strong>No mockups. No screenshots. Real, working software.</strong>
+                </p>
+                <div class="intro-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-text">
+                            <div class="stat-value">< 30 sec</div>
+                            <div class="stat-label">Build time</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-text">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">Functional</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🚀</div>
+                        <div class="stat-text">
+                            <div class="stat-value">Live Demo</div>
+                            <div class="stat-label">Try it yourself</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Scroll Progress Indicator -->
@@ -247,6 +281,68 @@
                         <div class="code-line">    <span class="keyword">return</span> <span class="string">'Amazing software'</span></div>
                         <div class="code-line">  }</div>
                         <div class="code-line">}</div>
+                    </div>
+                </div>
+
+                <!-- Interactive App Layer (becomes functional at 100%) -->
+                <div class="interactive-app" id="interactive-app">
+                    <!-- Real functional AI assistant -->
+                    <div class="app-container">
+                        <!-- Header with branding -->
+                        <div class="app-header">
+                            <div class="app-logo">
+                                <div class="logo-icon">⚡</div>
+                                <div class="logo-text">
+                                    <div class="logo-title">AI Assistant</div>
+                                    <div class="logo-subtitle">by Obsidian North</div>
+                                </div>
+                            </div>
+                            <div class="app-status">
+                                <span class="status-dot-live"></span>
+                                <span class="status-text-live">Online</span>
+                            </div>
+                        </div>
+
+                        <!-- Chat messages area -->
+                        <div class="app-messages" id="app-messages">
+                            <div class="welcome-message">
+                                <div class="welcome-icon">🎉</div>
+                                <h3 class="welcome-title">App Built Successfully!</h3>
+                                <p class="welcome-text">
+                                    You just watched us build this AI assistant in real-time.
+                                    Now it's yours to use. Ask me anything about your project!
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Quick actions -->
+                        <div class="app-quick-actions">
+                            <button class="app-quick-btn" data-app-prompt="What can you build for me?">
+                                💡 Services
+                            </button>
+                            <button class="app-quick-btn" data-app-prompt="How much will my project cost?">
+                                💰 Pricing
+                            </button>
+                            <button class="app-quick-btn" data-app-prompt="Let's schedule a call">
+                                📅 Book Call
+                            </button>
+                        </div>
+
+                        <!-- Chat input -->
+                        <div class="app-input-container">
+                            <input
+                                type="text"
+                                id="app-input"
+                                class="app-input"
+                                placeholder="Ask about your project..."
+                                autocomplete="off"
+                            />
+                            <button id="app-send" class="app-send-btn">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2 10L18 2L11 18L9 11L2 10Z"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
