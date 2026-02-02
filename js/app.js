@@ -4,12 +4,6 @@
 
 class ObsidianApp {
     constructor() {
-        this.chatMessages = document.getElementById('chat-messages');
-        this.chatInput = document.getElementById('chat-input');
-        this.chatSend = document.getElementById('chat-send');
-        this.quickButtons = document.querySelectorAll('.quick-btn');
-        this.isTyping = false;
-
         // Interactive app elements
         this.interactiveApp = document.getElementById('interactive-app');
         this.appMessages = document.getElementById('app-messages');
@@ -29,48 +23,8 @@ class ObsidianApp {
     }
 
     setupEventListeners() {
-        // Chat input handlers
-        this.chatSend.addEventListener('click', () => this.sendMessage());
-        this.chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.sendMessage();
-            }
-        });
-
-        // Quick action buttons
-        this.quickButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const prompt = btn.getAttribute('data-prompt');
-                this.chatInput.value = prompt;
-                this.sendMessage();
-            });
-        });
-
         // Interactive app event listeners
         this.setupAppEventListeners();
-
-        // CTA buttons
-        document.getElementById('scroll-to-chat')?.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            this.chatInput.focus();
-        });
-
-        document.getElementById('schedule-call')?.addEventListener('click', () => {
-            this.openBookingModal();
-        });
-
-        // Modal
-        document.getElementById('close-modal')?.addEventListener('click', () => {
-            this.closeBookingModal();
-        });
-
-        // Close modal on outside click
-        document.getElementById('booking-modal')?.addEventListener('click', (e) => {
-            if (e.target.id === 'booking-modal') {
-                this.closeBookingModal();
-            }
-        });
     }
 
     setupAppEventListeners() {
@@ -98,56 +52,6 @@ class ObsidianApp {
                 }
             });
         });
-    }
-
-    async sendMessage() {
-        const message = this.chatInput.value.trim();
-        if (!message || this.isTyping) return;
-
-        // Add user message
-        this.addMessage(message, 'user');
-        this.chatInput.value = '';
-
-        // Show typing indicator
-        this.showTyping();
-
-        // Simulate AI response (in production, call your AI API)
-        setTimeout(() => {
-            const response = this.getAIResponse(message);
-            this.hideTyping();
-            this.addMessage(response, 'bot');
-        }, 1500);
-    }
-
-    addMessage(content, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}-message`;
-
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        contentDiv.innerHTML = content;
-
-        messageDiv.appendChild(contentDiv);
-        this.chatMessages.appendChild(messageDiv);
-
-        // Scroll to bottom
-        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-    }
-
-    showTyping() {
-        this.isTyping = true;
-        const typingDiv = document.createElement('div');
-        typingDiv.className = 'message bot-message typing-indicator';
-        typingDiv.id = 'typing-indicator';
-        typingDiv.innerHTML = '<div class="message-content">●●●</div>';
-        this.chatMessages.appendChild(typingDiv);
-        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-    }
-
-    hideTyping() {
-        this.isTyping = false;
-        const typing = document.getElementById('typing-indicator');
-        if (typing) typing.remove();
     }
 
     getAIResponse(message) {
@@ -192,9 +96,9 @@ class ObsidianApp {
         }
 
         if (lowered.includes('schedule') || lowered.includes('book') || lowered.includes('call') || lowered.includes('consultation')) {
-            setTimeout(() => this.openBookingModal(), 500);
-            return `Perfect! Let me open our calendar for you.<br/><br/>
-                Pick a time that works best, and we'll discuss your project in detail. Looking forward to chatting! 📅`;
+            return `Perfect! I'd love to schedule a call with you.<br/><br/>
+                Email us at: <a href="mailto:hello@obsidiannorth.com" style="color: #3b82f6;">hello@obsidiannorth.com</a><br/><br/>
+                Or send us your availability and we'll get back to you within 24 hours. Looking forward to chatting! 📅`;
         }
 
         if (lowered.includes('tech') || lowered.includes('stack') || lowered.includes('technology')) {
@@ -294,21 +198,6 @@ class ObsidianApp {
         if (typing) typing.remove();
     }
 
-    openBookingModal() {
-        const modal = document.getElementById('booking-modal');
-        if (modal) {
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    closeBookingModal() {
-        const modal = document.getElementById('booking-modal');
-        if (modal) {
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
 
     setupScrollAnimations() {
         // Continuous scroll-driven animation

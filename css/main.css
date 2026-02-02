@@ -106,62 +106,11 @@ body {
     box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
 }
 
-/* Hero Section */
-.hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6rem 2rem 4rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1000px;
-    height: 1000px;
-    background: var(--gradient-glow);
-    opacity: 0.3;
-    animation: float 20s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-50px); }
-}
-
-.hero-content {
-    max-width: 800px;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-}
-
-.hero-title {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.02em;
-}
-
 .gradient-text {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-}
-
-.hero-subtitle {
-    font-size: 1.25rem;
-    color: var(--text-muted);
-    margin-bottom: 3rem;
-    line-height: 1.8;
 }
 
 /* Chat Container - Glassmorphism */
@@ -414,8 +363,9 @@ section {
 /* How It Works - Continuous Scroll Animation */
 .how-it-works {
     background: var(--bg-darker);
-    min-height: 200vh;
+    min-height: 300vh;
     position: relative;
+    padding-top: 6rem;
 }
 
 /* Build Intro Section */
@@ -526,10 +476,11 @@ section {
 
 .continuous-build-container {
     position: sticky;
-    top: 120px;
+    top: 100px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
+    height: calc(100vh - 150px);
 }
 
 .build-canvas-container {
@@ -537,7 +488,8 @@ section {
     backdrop-filter: blur(20px);
     border: 1px solid var(--border);
     border-radius: 20px;
-    aspect-ratio: 4/3;
+    width: 100%;
+    height: 100%;
     position: relative;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
