@@ -235,52 +235,24 @@ class ObsidianApp {
     }
 
     updateBuildStage(progress) {
-        // Update progress bar
-        const progressBar = document.getElementById('build-progress');
-        if (progressBar) {
-            progressBar.style.width = `${progress * 100}%`;
-        }
-
         // Get SVG elements
         const gridBg = document.getElementById('grid-bg');
         const wireframeGroup = document.getElementById('wireframe-group');
         const componentsGroup = document.getElementById('components-group');
         const appGroup = document.getElementById('app-group');
-        const codeOverlay = document.getElementById('code-overlay');
-
-        // Get stage label elements
-        const stageNumber = document.getElementById('stage-number');
-        const stageTitle = document.getElementById('stage-title');
-        const stageDesc = document.getElementById('stage-desc');
 
         if (!wireframeGroup) return;
 
-        // Define stages based on progress
-        // 0-0.2: Grid appears
-        // 0.2-0.4: Wireframe draws in
-        // 0.4-0.5: Components fill with color
-        // 0.5-0.65: Code overlay appears
-        // 0.65-0.8: Code fades, final app appears
-        // 0.8-1.0: Final polished state
+        // Simplified stages:
+        // 0-0.3: Wireframe draws in
+        // 0.3-0.6: Components fill
+        // 0.6-0.9: Final polished app
+        // 0.9-1.0: Interactive app
 
-        // Stage 1: Grid (0-0.2)
-        if (progress < 0.2) {
-            const gridProgress = progress / 0.2;
-            if (gridBg) gridBg.setAttribute('opacity', gridProgress * 0.5);
-            if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
-            if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
-            if (appGroup) appGroup.setAttribute('opacity', '0');
-            if (codeOverlay) codeOverlay.classList.remove('active');
-
-            if (stageNumber) stageNumber.textContent = '01';
-            if (stageTitle) stageTitle.textContent = 'Design & Planning';
-            if (stageDesc) stageDesc.textContent = 'Starting with a clean canvas';
-        }
-
-        // Stage 2: Wireframe (0.2-0.4)
-        else if (progress < 0.4) {
-            const wireframeProgress = (progress - 0.2) / 0.2;
-            if (gridBg) gridBg.setAttribute('opacity', '0.5');
+        // Stage 1: Wireframe (0-0.3)
+        if (progress < 0.3) {
+            const wireframeProgress = progress / 0.3;
+            if (gridBg) gridBg.setAttribute('opacity', wireframeProgress * 0.3);
             if (wireframeGroup) wireframeGroup.setAttribute('opacity', wireframeProgress);
 
             // Animate stroke-dashoffset for drawing effect
@@ -304,88 +276,39 @@ class ObsidianApp {
 
             if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
             if (appGroup) appGroup.setAttribute('opacity', '0');
-            if (codeOverlay) codeOverlay.classList.remove('active');
-
-            if (stageNumber) stageNumber.textContent = '01';
-            if (stageTitle) stageTitle.textContent = 'Design & Planning';
-            if (stageDesc) stageDesc.textContent = 'Wireframing the architecture';
         }
 
-        // Stage 3: Components (0.4-0.5)
-        else if (progress < 0.5) {
-            const componentProgress = (progress - 0.4) / 0.1;
-            if (gridBg) gridBg.setAttribute('opacity', 0.5 * (1 - componentProgress));
+        // Stage 2: Components (0.3-0.6)
+        else if (progress < 0.6) {
+            const componentProgress = (progress - 0.3) / 0.3;
+            if (gridBg) gridBg.setAttribute('opacity', 0.3 * (1 - componentProgress));
             if (wireframeGroup) wireframeGroup.setAttribute('opacity', 1 - componentProgress);
             if (componentsGroup) componentsGroup.setAttribute('opacity', componentProgress);
             if (appGroup) appGroup.setAttribute('opacity', '0');
-            if (codeOverlay) codeOverlay.classList.remove('active');
-
-            if (stageNumber) stageNumber.textContent = '01';
-            if (stageTitle) stageTitle.textContent = 'Design & Planning';
-            if (stageDesc) stageDesc.textContent = 'Adding structure and components';
         }
 
-        // Stage 4: Code overlay (0.5-0.65)
-        else if (progress < 0.65) {
-            const codeProgress = (progress - 0.5) / 0.15;
+        // Stage 3: Final app (0.6-0.9)
+        else if (progress < 0.9) {
+            const appProgress = (progress - 0.6) / 0.3;
             if (gridBg) gridBg.setAttribute('opacity', '0');
             if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
-            if (componentsGroup) componentsGroup.setAttribute('opacity', 1 - codeProgress * 0.5);
-            if (appGroup) appGroup.setAttribute('opacity', '0');
-
-            if (codeProgress > 0.2 && codeOverlay) {
-                codeOverlay.classList.add('active');
-            }
-
-            if (stageNumber) stageNumber.textContent = '02';
-            if (stageTitle) stageTitle.textContent = 'Development';
-            if (stageDesc) stageDesc.textContent = 'Writing clean, modern code';
-        }
-
-        // Stage 5: Final app (0.65-0.8)
-        else if (progress < 0.8) {
-            const appProgress = (progress - 0.65) / 0.15;
-            if (gridBg) gridBg.setAttribute('opacity', '0');
-            if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
-            if (componentsGroup) componentsGroup.setAttribute('opacity', Math.max(0, 0.5 - appProgress * 0.5));
+            if (componentsGroup) componentsGroup.setAttribute('opacity', Math.max(0, 1 - appProgress));
             if (appGroup) appGroup.setAttribute('opacity', appProgress);
-
-            if (appProgress > 0.3 && codeOverlay) {
-                codeOverlay.classList.remove('active');
-            }
-
-            if (stageNumber) stageNumber.textContent = '03';
-            if (stageTitle) stageTitle.textContent = 'Launch & Support';
-            if (stageDesc) stageDesc.textContent = 'Deploying your application';
-        }
-
-        // Stage 6: Polished (0.8-0.95)
-        else if (progress < 0.95) {
-            if (gridBg) gridBg.setAttribute('opacity', '0');
-            if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
-            if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
-            if (appGroup) appGroup.setAttribute('opacity', '1');
-            if (codeOverlay) codeOverlay.classList.remove('active');
 
             // Ensure interactive app is hidden
             if (this.interactiveApp) this.interactiveApp.classList.remove('active');
             this.appEnabled = false;
-
-            if (stageNumber) stageNumber.textContent = '03';
-            if (stageTitle) stageTitle.textContent = 'Launch & Support';
-            if (stageDesc) stageDesc.textContent = 'Production-ready and fully supported';
         }
 
-        // Stage 7: Interactive App (0.95-1.0)
+        // Stage 4: Interactive App (0.9-1.0)
         else {
             if (gridBg) gridBg.setAttribute('opacity', '0');
             if (wireframeGroup) wireframeGroup.setAttribute('opacity', '0');
             if (componentsGroup) componentsGroup.setAttribute('opacity', '0');
 
             // Fade out SVG app, fade in interactive app
-            const appTransition = (progress - 0.95) / 0.05;
+            const appTransition = (progress - 0.9) / 0.1;
             if (appGroup) appGroup.setAttribute('opacity', Math.max(0, 1 - appTransition));
-            if (codeOverlay) codeOverlay.classList.remove('active');
 
             // Enable interactive app
             if (this.interactiveApp && appTransition > 0.3) {
@@ -394,7 +317,6 @@ class ObsidianApp {
 
                 // Focus input when fully visible
                 if (appTransition > 0.8 && this.appInput && document.activeElement !== this.appInput) {
-                    // Only focus if user hasn't already focused something else
                     setTimeout(() => {
                         if (document.activeElement === document.body) {
                             this.appInput.focus();
@@ -402,10 +324,6 @@ class ObsidianApp {
                     }, 300);
                 }
             }
-
-            if (stageNumber) stageNumber.textContent = '🎉';
-            if (stageTitle) stageTitle.textContent = 'App Launched!';
-            if (stageDesc) stageDesc.textContent = 'Try it out - it\'s fully functional';
         }
     }
 
