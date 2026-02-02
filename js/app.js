@@ -212,11 +212,10 @@ class ObsidianApp {
             const windowHeight = window.innerHeight;
 
             // Calculate scroll progress (0 to 1)
-            // Start when section enters viewport, end when it leaves
-            const startOffset = windowHeight * 0.3;
-            const scrollStart = -rect.top + startOffset;
-            const scrollRange = sectionHeight - windowHeight + startOffset;
-            let progress = Math.max(0, Math.min(1, scrollStart / scrollRange));
+            // Start animation immediately - adjust so wireframe is visible from the start
+            const scrollStart = Math.max(0, -rect.top);
+            const scrollRange = sectionHeight - windowHeight;
+            let progress = Math.max(0.05, Math.min(1, scrollStart / scrollRange));
 
             this.updateBuildStage(progress);
 
