@@ -360,24 +360,26 @@ section {
 /* How It Works - Continuous Scroll Animation */
 .how-it-works {
     background: var(--bg-darker);
-    min-height: 300vh;
+    min-height: 250vh;
     position: relative;
-    padding-top: 12rem;
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Build Intro Section */
 .build-intro {
     max-width: 1000px;
-    margin: 0 auto 8rem;
-    padding: 0 2rem;
+    margin: 0 auto;
+    padding: 20vh 2rem 10vh;
     text-align: center;
 }
 
 .intro-title {
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 300;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
     color: var(--text);
 }
 
