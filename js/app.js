@@ -212,10 +212,11 @@ class ObsidianApp {
             const windowHeight = window.innerHeight;
 
             // Calculate scroll progress (0 to 1)
-            // Start animation immediately - adjust so wireframe is visible from the start
+            // Start at 15% so wireframe is clearly visible from the start
             const scrollStart = Math.max(0, -rect.top);
             const scrollRange = sectionHeight - windowHeight;
-            let progress = Math.max(0.05, Math.min(1, scrollStart / scrollRange));
+            let rawProgress = scrollStart / scrollRange;
+            let progress = Math.max(0.15, Math.min(1, rawProgress));
 
             this.updateBuildStage(progress);
 
